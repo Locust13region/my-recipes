@@ -44,10 +44,10 @@ const NewRecipe: React.FC = () => {
 	]; ////////////////////////////////////////////////////////ЗАМЕНИТЬ НА ТЭГИ ИЗ БАЗЫ
 	const [tagValue, setTagValue] = useState<string | null>(null);
 	const [inputTagValue, setInputTagValue] = useState("#АзиатскаяКухня");
-	const handleSelectTag = (event: unknown, newValue: string | null) => {
+	const handleSelectTag = (_event: unknown, newValue: string | null) => {
 		setTagValue(newValue);
 	};
-	const handleInputTag = (event: unknown, newInputValue: string) => {
+	const handleInputTag = (_event: unknown, newInputValue: string) => {
 		setInputTagValue(newInputValue);
 	};
 	////////////////////////////////////////NAME//////////////////////////////////////

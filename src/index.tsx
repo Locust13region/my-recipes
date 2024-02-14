@@ -17,53 +17,56 @@ import Recipe from "./components/pages/recipe.tsx";
 
 import "./index.css";
 
-const router = createBrowserRouter([
-	{
-		path: "/",
-		element: <Main />,
-	},
-	{
-		path: "signin",
-		element: <SignIn />,
-	},
-	{
-		path: "signup",
-		element: <SignUp />,
-	},
-	{
-		path: ":id",
-		element: (
-			<WithAuth>
-				<RecipesList />
-			</WithAuth>
-		),
-	},
-	{
-		path: ":categoryId/:id",
-		element: (
-			<WithAuth>
-				<Recipe />
-			</WithAuth>
-		),
-	},
-	{
-		path: ":categoryId/new",
-		element: (
-			<WithAuth>
-				<NewRecipe />
-			</WithAuth>
-		),
-	},
-	{
-		path: "*",
-		element: (
-			<Navigate
-				to="/"
-				replace={true}
-			/>
-		),
-	},
-]);
+const router = createBrowserRouter(
+	[
+		{
+			path: "/",
+			element: <Main />,
+		},
+		{
+			path: "signin",
+			element: <SignIn />,
+		},
+		{
+			path: "signup",
+			element: <SignUp />,
+		},
+		{
+			path: ":id",
+			element: (
+				<WithAuth>
+					<RecipesList />
+				</WithAuth>
+			),
+		},
+		{
+			path: ":categoryId/:id",
+			element: (
+				<WithAuth>
+					<Recipe />
+				</WithAuth>
+			),
+		},
+		{
+			path: ":categoryId/new",
+			element: (
+				<WithAuth>
+					<NewRecipe />
+				</WithAuth>
+			),
+		},
+		{
+			path: "*",
+			element: (
+				<Navigate
+					to="/"
+					replace={true}
+				/>
+			),
+		},
+	],
+	{ basename: "/my-recipes" }
+);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
 	// <React.StrictMode>
