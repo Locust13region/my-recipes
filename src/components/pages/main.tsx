@@ -19,14 +19,14 @@ const Main: React.FC = () => {
 	return (
 		<div className="flex flex-col mx-auto max-w-md min-h-screen border">
 			<header className="header-footer-link top-0">
-				<a
-					// to={"new"}
+				<Link
+					to={"favorites"}
 					className="flex"
 				>
 					<span className=" text-amber-500 text-3xl material-symbols-outlined">
 						favorite
 					</span>
-				</a>
+				</Link>
 				<div className="flex grow gap-2 justify-between border border-gray-300 rounded-full px-4 py-1 leading-7">
 					<input
 						name="search"

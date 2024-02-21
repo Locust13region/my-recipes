@@ -16,7 +16,7 @@ import { setMessageOn } from "../store/modal-slice";
 
 const recipeTheme = createTheme({
 	typography: {
-		fontSize: 18,
+		fontSize: 16,
 	},
 });
 
@@ -128,15 +128,7 @@ const SignIn: React.FC = () => {
 							helperText={passwordErrorText}
 							onChange={handleOnChangePassword}
 						/>
-						<Box
-							className=" text-amber-500 "
-							sx={{
-								marginTop: 5,
-								display: "flex",
-								flexDirection: "column",
-								alignItems: "center",
-							}}
-						>
+						<Box className=" mt-5 flex flex-col items-center text-amber-500 ">
 							<Button
 								type="submit"
 								variant="text"

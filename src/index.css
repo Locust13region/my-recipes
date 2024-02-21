@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 .bg-link {
-	@apply before:fixed before:top-0 before:left-[50%] before:ml-[-223px] before:w-[447px] before:h-full before:-z-10 before:bg-main before:bg-cover before:saturate-50 before:brightness-125;
+	@apply before:fixed before:top-0 before:left-[50%] before:ml-[-223px] before:w-[447px] before:h-full before:-z-10 before:bg-main before:bg-cover before:saturate-50 before:brightness-125 before:opacity-60;
 }
 .header-footer-link {
 	@apply sticky z-20 bg-white flex gap-5 items-center justify-between px-10 h-14 border-b-2 border-b-gray-300;

@@ -1,3 +1,4 @@
+import React from "react";
 import ReactDOM from "react-dom/client";
 import {
 	createBrowserRouter,
@@ -14,6 +15,10 @@ import Spinner from "./components/pages/spinner.tsx";
 import RecipesList from "./components/pages/recipes-list.tsx";
 import NewRecipe from "./components/pages/new-recipe.tsx";
 import Recipe from "./components/pages/recipe.tsx";
+import RecipeDescription from "./components/pages/recipe-description.tsx";
+import RecipeIngredients from "./components/pages/recipe-ingredients.tsx";
+import RecipeSteps from "./components/pages/recipe-steps.tsx";
+import Favorites from "./components/pages/favorites.tsx";
 
 import "./index.css";
 
@@ -46,12 +51,34 @@ const router = createBrowserRouter(
 					<Recipe />
 				</WithAuth>
 			),
+			children: [
+				{
+					index: true,
+					element: <RecipeDescription />,
+				},
+				{
+					path: "/:categoryId/:id/ingredients",
+					element: <RecipeIngredients />,
+				},
+				{
+					path: "/:categoryId/:id/steps",
+					element: <RecipeSteps />,
+				},
+			],
 		},
 		{
 			path: ":categoryId/new",
 			element: (
 				<WithAuth>
 					<NewRecipe />
+				</WithAuth>
+			),
+		},
+		{
+			path: "favorites",
+			element: (
+				<WithAuth>
+					<Favorites />
 				</WithAuth>
 			),
 		},
@@ -64,17 +91,17 @@ const router = createBrowserRouter(
 				/>
 			),
 		},
-	],
-	{ basename: "/my-recipes" }
+	]
+	// { basename: "/my-recipes" }
 );
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-	// <React.StrictMode>
-	<Provider store={store}>
-		<RouterProvider
-			router={router}
-			fallbackElement={<Spinner />}
-		/>
-	</Provider>
-	// </React.StrictMode>
+	<React.StrictMode>
+		<Provider store={store}>
+			<RouterProvider
+				router={router}
+				fallbackElement={<Spinner />}
+			/>
+		</Provider>
+	</React.StrictMode>
 );

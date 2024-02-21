@@ -52,7 +52,7 @@ const MessageModal: React.FC = () => {
 							</button>
 						</header>
 						<center>
-							<h3 className="text-xl px-1">{messageContent}</h3>
+							<h3 className="text-xl px-2">{messageContent}</h3>
 						</center>
 						<footer className="">
 							<button

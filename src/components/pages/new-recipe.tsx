@@ -1,9 +1,16 @@
 import { useEffect, useState } from "react";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../hook/typed-hooks";
-import { getRecipesCategories, sendNewRecipe } from "../store/recipes-slice";
+import {
+	clearSelectedTagValue,
+	getRecipesCategories,
+	receiveTags,
+	sendNewRecipe,
+	sendNewTag,
+	setSelectedTagValue,
+} from "../store/recipes-slice";
 import MessageModal from "../modal/message";
-import type { TIngredients, TStep, TNewRecipe } from "../types/types";
+import type { TIngredients, TStep, TNewRecipe, TTag } from "../types/types";
 import {
 	Container,
 	CssBaseline,
@@ -11,63 +18,43 @@ import {
 	Box,
 	MenuItem,
 	Autocomplete,
+	createFilterOptions,
 } from "@mui/material";
+const filter = createFilterOptions<TTag>();
 
 const NewRecipe: React.FC = () => {
 	const params = useParams();
 	const currentCategory = Number(params.categoryId);
 	const location = useLocation();
 	const dispatch = useAppDispatch();
+	const navigate = useNavigate();
 	const accessToken = useAppSelector(
 		(state) => state.userState.user.accessToken
 	);
+	const categories = useAppSelector((state) => state.recipesState.categories);
+	const tags = useAppSelector((state) => state.recipesState.tags);
 
 	useEffect(() => {
 		dispatch(getRecipesCategories());
-	}, [accessToken, dispatch, params.id]);
-
-	const categories = useAppSelector((state) => state.recipesState.categories);
+		dispatch(receiveTags());
+	}, [accessToken, dispatch]);
 
 	////////////////////////////////////////CATEGORY//////////////////////////////////
-	const [selectedCategory, setSelectedCategory] = useState(
-		currentCategory || ""
-	);
-	const handleSelectCategory = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setSelectedCategory(event.target.value);
-	};
-	////////////////////////////////////////ТЭГ////////////////////////////////////////
-
-	const tags = [
-		{ label: "#ГрузинскаяКухня" },
-		{ label: "#АзиатскаяКухня" },
-		{ label: "#УзбекскаяКухня" },
-	]; ////////////////////////////////////////////////////////ЗАМЕНИТЬ НА ТЭГИ ИЗ БАЗЫ
-	const [tagValue, setTagValue] = useState<string | null>(null);
-	const [inputTagValue, setInputTagValue] = useState("#АзиатскаяКухня");
-	const handleSelectTag = (_event: unknown, newValue: string | null) => {
-		setTagValue(newValue);
-	};
-	const handleInputTag = (_event: unknown, newInputValue: string) => {
-		setInputTagValue(newInputValue);
-	};
+	const [selectedCategory, setSelectedCategory] = useState(currentCategory);
 	////////////////////////////////////////NAME//////////////////////////////////////
-	const [recipeName, setRecipeName] = useState("Соус сладкий чили");
+	const [recipeName, setRecipeName] = useState("");
 	const [recipeNameErrorText, setRecipeNameErrorText] = useState("");
 	const handleRecipeName = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setRecipeNameErrorText("");
 		setRecipeName(event.target.value);
 	};
 	////////////////////////////////////////URL////////////////////////////////////////
-	const [recipeUrl, setRecipeUrl] = useState(
-		"https://povar.ru/recipes/sladkii_sous_chili-79966.html"
-	);
+	const [recipeUrl, setRecipeUrl] = useState("");
 	const handleRecipeUrl = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setRecipeUrl(event.target.value);
 	};
 	////////////////////////////////////////DESCRIPTION////////////////////////////////
-	const [recipeDescription, setRecipeDescription] = useState(
-		"Это самый лучший рецепт"
-	);
+	const [recipeDescription, setRecipeDescription] = useState("");
 	const handleRecipeDescription = (
 		event: React.ChangeEvent<HTMLInputElement>
 	) => {
@@ -101,21 +88,25 @@ const NewRecipe: React.FC = () => {
 			setRecipeNameErrorText("Необходимо название рецепта");
 			return;
 		}
+
 		const newRecipe: TNewRecipe = {
 			categoryId: currentCategory,
-			// tag: tagValue || inputTagValue,
 			name: recipeName,
 			description: recipeDescription,
-			image: recipeUrl,
+			source: recipeUrl,
 			steps: recipeSteps,
 			ingredients: recipeIngredients,
 		};
-		dispatch(sendNewRecipe({ accessToken, newRecipe }));
+		const newRecipeResult = dispatch(sendNewRecipe({ accessToken, newRecipe }));
+		newRecipeResult.then((result) => {
+			clearAllFields();
+			console.log(result);
+			navigate(`/${result.payload.categoryId}/${result.payload.id}`);
+		});
 	};
 	////////////////////////////////////////CLEAR ALL///////////////////////////////////
 	const clearAllFields = () => {
-		setTagValue(null);
-		setInputTagValue("");
+		dispatch(clearSelectedTagValue());
 		setRecipeName("");
 		setRecipeUrl("");
 		setRecipeDescription("");
@@ -159,7 +150,9 @@ const NewRecipe: React.FC = () => {
 						label="Категория"
 						value={selectedCategory}
 						disabled={location.pathname.includes("new")}
-						onChange={handleSelectCategory}
+						onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+							setSelectedCategory(Number(event.target.value));
+						}}
 						sx={{ mt: 1 }}
 					>
 						{categories.map((category, index) => (
@@ -173,15 +166,58 @@ const NewRecipe: React.FC = () => {
 					</TextField>
 					<Autocomplete
 						freeSolo
-						fullWidth
-						clearOnEscape
-						autoFocus
-						value={tagValue}
-						onChange={handleSelectTag}
-						inputValue={inputTagValue}
-						onInputChange={handleInputTag}
 						id="selectedTag"
-						options={tags.map((tag) => tag.label)}
+						fullWidth
+						autoFocus
+						selectOnFocus
+						clearOnBlur
+						handleHomeEndKeys
+						value={useAppSelector(
+							(state) => state.recipesState.selectedTagValue
+						)}
+						onChange={(_event, newValue) => {
+							if (typeof newValue === "string") {
+								console.log("add as string", newValue);
+								dispatch(sendNewTag({ accessToken, name: newValue }));
+								console.log(tags);
+							} else if (newValue && newValue.inputValue) {
+								console.log("add as object", newValue);
+								dispatch(
+									sendNewTag({ accessToken, name: newValue.inputValue })
+								);
+							} else {
+								dispatch(setSelectedTagValue(newValue));
+							}
+						}}
+						filterOptions={(options, params) => {
+							const filtered = filter(options, params);
+							const { inputValue } = params;
+							// Suggest the creation of a new value
+							const isExisting = options.some(
+								(option) => inputValue === option.name
+							);
+							if (inputValue !== "" && !isExisting) {
+								filtered.push({
+									inputValue,
+									name: `Добавляем "${inputValue}"`,
+								});
+							}
+
+							return filtered;
+						}}
+						options={tags}
+						getOptionLabel={(option) => {
+							// Value selected with enter, right from the input
+							if (typeof option === "string") {
+								return option;
+							}
+							// Add "xxx" option created dynamically
+							if (option.inputValue) {
+								return option.inputValue;
+							}
+							// Regular option
+							return option.name;
+						}}
 						renderInput={(params) => (
 							<TextField
 								{...params}
@@ -216,7 +252,7 @@ const NewRecipe: React.FC = () => {
 						sx={{ mt: 1 }}
 					/>
 					<TextField
-						type="search"
+						multiline
 						fullWidth
 						id="recipeDescription"
 						name="recipeDescription"

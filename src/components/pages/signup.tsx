@@ -15,7 +15,7 @@ import { registration } from "../store/user-slice";
 
 const recipeTheme = createTheme({
 	typography: {
-		fontSize: 18,
+		fontSize: 16,
 	},
 });
 
