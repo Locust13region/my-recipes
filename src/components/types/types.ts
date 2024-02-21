@@ -24,21 +24,33 @@ export type TIngredients = {
 export type TStep = {
 	text: string;
 };
+export type TTag = {
+	inputValue?: string;
+	id?: number;
+	name: string;
+};
+
 export type TRecipe = {
 	id: number;
-	categoryId: number;
-	tag: string;
 	name: string;
-	image: string;
+	source: string;
 	description: string;
-	ingredients: TIngredients[];
-	steps: TStep[];
+	categoryId: number;
+	isOwned: boolean;
+	isFavourite: boolean;
+	owner: {
+		id: string;
+		email: string;
+	};
+	userId: string;
+	categoryName: string;
+	tags: TTag[];
 };
+
 export type TNewRecipe = {
 	categoryId: number;
-	// tag: string;
 	name: string;
-	image: string;
+	source: string;
 	description: string;
 	ingredients: TIngredients[];
 	steps: TStep[];
@@ -46,12 +58,32 @@ export type TNewRecipe = {
 export type TRecipesState = {
 	categories: TCategories[];
 	categoryList: TRecipe[];
-};
-export type TAccessListArgs = {
-	accessToken: string;
-	categoryId: number;
+	tags: TTag[];
+	selectedTagValue: TTag | null;
+	currentRecipeDescription: TRecipe | null;
+	currentRecipeIngredients: TRecipeIngredients[];
+	currentRecipeSteps: TRecipeSteps[];
 };
 export type TNewRecipePostArgs = {
 	accessToken: string;
 	newRecipe: TNewRecipe;
+};
+export type TNewTagArgs = {
+	accessToken: string;
+	name: string;
+};
+export type TRecipeDescriptionArgs = {
+	accessToken: string;
+	id?: string;
+};
+export type TRecipeIngredients = {
+	id: number;
+	name: string;
+	order: number;
+	recipeId: number;
+};
+export type TRecipeSteps = {
+	id: number;
+	text: string;
+	order: number;
 };

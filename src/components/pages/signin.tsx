@@ -16,7 +16,7 @@ import { setMessageOn } from "../store/modal-slice";
 
 const recipeTheme = createTheme({
 	typography: {
-		fontSize: 18,
+		fontSize: 16,
 	},
 });
 
@@ -27,8 +27,8 @@ const SignIn: React.FC = () => {
 	const fromLocation = location.state?.from?.pathname || "/";
 	const needAuth = location.state?.needAuth;
 	needAuth && dispatch(setMessageOn(needAuth));
-	const [username, setUsername] = useState("masandrew@mail.ru");
-	const [password, setPassword] = useState("QAZwsx90-");
+	const [username, setUsername] = useState("");
+	const [password, setPassword] = useState("");
 	const [usernameErrorText, setUsernameErrorText] = useState("");
 	const [passwordErrorText, setPasswordErrorText] = useState("");
 
@@ -128,15 +128,7 @@ const SignIn: React.FC = () => {
 							helperText={passwordErrorText}
 							onChange={handleOnChangePassword}
 						/>
-						<Box
-							className=" text-amber-500 "
-							sx={{
-								marginTop: 5,
-								display: "flex",
-								flexDirection: "column",
-								alignItems: "center",
-							}}
-						>
+						<Box className=" mt-5 flex flex-col items-center text-amber-500 ">
 							<Button
 								type="submit"
 								variant="text"

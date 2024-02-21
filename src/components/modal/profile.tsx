@@ -2,8 +2,9 @@ import { useRef } from "react";
 import { createPortal } from "react-dom";
 import { useClickAway } from "react-use";
 import { clearCurrentUser } from "../store/user-slice";
-import { useAppDispatch, useAppSelector } from "../hook/typed-hooks";
+import { useAppDispatch } from "../hook/typed-hooks";
 import { useNavigate } from "react-router-dom";
+import { TUserState } from "../types/types";
 
 type TProfileProps = {
 	show: boolean;
@@ -13,7 +14,12 @@ type TProfileProps = {
 const Profile: React.FC<TProfileProps> = ({ show, setShow }) => {
 	const navigate = useNavigate();
 	const dispatch = useAppDispatch();
-	const profileName = useAppSelector((state) => state.userState.user.username);
+	const isLocalUser = localStorage.getItem("_recipes");
+
+	const profileName = isLocalUser
+		? (JSON.parse(isLocalUser) as TUserState["user"]).username
+		: null;
+
 	const ref = useRef(null);
 	useClickAway(ref, () => {
 		setShow(false);
