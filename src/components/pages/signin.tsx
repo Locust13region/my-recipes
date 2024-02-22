@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
 	CssBaseline,
 	Button,
@@ -26,11 +26,14 @@ const SignIn: React.FC = () => {
 	const location = useLocation();
 	const fromLocation = location.state?.from?.pathname || "/";
 	const needAuth = location.state?.needAuth;
-	needAuth && dispatch(setMessageOn(needAuth));
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 	const [usernameErrorText, setUsernameErrorText] = useState("");
 	const [passwordErrorText, setPasswordErrorText] = useState("");
+
+	useEffect(() => {
+		needAuth && dispatch(setMessageOn(needAuth));
+	}, [dispatch, needAuth]);
 
 	const handleOnChangeUsername = (
 		event: React.ChangeEvent<HTMLInputElement>

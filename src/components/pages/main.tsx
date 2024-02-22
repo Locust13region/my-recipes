@@ -72,11 +72,14 @@ const Main: React.FC = () => {
 					show={showProfile}
 					setShow={setShowProfile}
 				/>
-				<a className="">
+				<Link
+					className=""
+					to={"/shopping"}
+				>
 					<span className="flex text-amber-500 text-3xl material-symbols-outlined">
 						shopping_cart
 					</span>
-				</a>
+				</Link>
 			</footer>
 			<MessageModal />
 		</div>

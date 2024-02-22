@@ -74,16 +74,11 @@ const Favorites: React.FC = () => {
 				>
 					Очистить
 				</button>
-				<button
-					className=""
-					onClick={() => {
-						console.log("в корзину покупок");
-					}}
-				>
+				<Link to={"/shopping"}>
 					<span className="flex text-amber-500 text-3xl material-symbols-outlined">
 						shopping_cart
 					</span>
-				</button>
+				</Link>
 			</footer>
 			<MessageModal />
 		</div>

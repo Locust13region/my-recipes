@@ -161,7 +161,7 @@ const Recipe: React.FC = () => {
 			<footer className="header-footer-link bottom-0">
 				{alignment.includes("ingredients") ? (
 					<Link
-						to={"/favorites"}
+						to={"/shopping"}
 						state={{ pathname }}
 						className="leading-3  text-xl"
 						onClick={() => {
