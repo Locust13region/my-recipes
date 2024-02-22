@@ -1,14 +1,7 @@
 import { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../hook/typed-hooks";
-import {
-	clearSelectedTagValue,
-	getRecipesCategories,
-	receiveTags,
-	sendNewRecipe,
-	sendNewTag,
-	setSelectedTagValue,
-} from "../store/recipes-slice";
+import { getRecipesCategories, sendNewRecipe } from "../store/recipes-slice";
 import MessageModal from "../modal/message";
 import type { TIngredients, TStep, TNewRecipe, TTag } from "../types/types";
 import Container from "@mui/material/Container";

@@ -7,13 +7,21 @@ import {
 	getRecipeIngredients,
 	getRecipeSteps,
 	getTags,
+	getFavorites,
+	getRecipeDescription,
+	getRecipeIngredients,
+	getRecipeSteps,
+	getTags,
 	postNewRecipe,
+	postNewTag,
+	postToFavorites,
 	postNewTag,
 	postToFavorites,
 } from "../services/api-request";
 import type {
 	TRecipesState,
 	TNewRecipePostArgs,
+	TNewTagArgs,
 	TNewTagArgs,
 } from "../types/types";
 
@@ -23,6 +31,7 @@ export const getRecipesCategories = createAsyncThunk(
 		try {
 			const response = await getCategories();
 			if (!response.ok) {
+				return rejectWithValue("Список не получен.");
 				return rejectWithValue("Список не получен.");
 			}
 			return await response.json();
@@ -39,6 +48,27 @@ export const getRecipesCategories = createAsyncThunk(
 
 export const getRecipesList = createAsyncThunk(
 	"recipes/getRecipesList",
+	async (categoryId: number, { rejectWithValue }) => {
+		try {
+			const response = await getCategoryList(categoryId);
+			if (!response.ok) {
+				return rejectWithValue("Список не получен.");
+			}
+			return await response.json();
+		} catch (error) {
+			if (error instanceof Error) {
+				return rejectWithValue(
+					"Ошибка соединения с сервером. Попробуйте позднее."
+				);
+			}
+			console.log(error);
+		}
+	}
+);
+
+export const receiveTags = createAsyncThunk(
+	"recipes/receiveTags",
+	async (_, { rejectWithValue }) => {
 	async (categoryId: number, { rejectWithValue }) => {
 		try {
 			const response = await getCategoryList(categoryId);
@@ -82,7 +112,29 @@ export const sendNewTag = createAsyncThunk(
 	async (newTagArgs: TNewTagArgs, { rejectWithValue }) => {
 		try {
 			const response = await postNewTag(newTagArgs);
+			const response = await getTags();
 			if (!response.ok) {
+				return rejectWithValue("Теги не получены.");
+			}
+			return await response.json();
+		} catch (error) {
+			if (error instanceof Error) {
+				return rejectWithValue(
+					"Ошибка соединения с сервером. Попробуйте позднее."
+				);
+			}
+			console.log(error);
+		}
+	}
+);
+
+export const sendNewTag = createAsyncThunk(
+	"recipes/sendNewTag",
+	async (newTagArgs: TNewTagArgs, { rejectWithValue }) => {
+		try {
+			const response = await postNewTag(newTagArgs);
+			if (!response.ok) {
+				return rejectWithValue("Новый тег не отправлен.");
 				return rejectWithValue("Новый тег не отправлен.");
 			}
 			return await response.json();
@@ -97,6 +149,7 @@ export const sendNewTag = createAsyncThunk(
 	}
 );
 
+
 export const sendNewRecipe = createAsyncThunk(
 	"recipes/sendNewRecipe",
 	async (
@@ -109,7 +162,109 @@ export const sendNewRecipe = createAsyncThunk(
 			const response = await postNewRecipe(newRecipePostArgs, selectedTag);
 			if (!response.ok) {
 				console.log(response.statusText);
+				console.log(response.statusText);
 				return rejectWithValue("Рецепт не отправлен.");
+			}
+			return await response.json();
+		} catch (error) {
+			if (error instanceof Error) {
+				return rejectWithValue(
+					"Ошибка соединения с сервером. Попробуйте позднее."
+				);
+			}
+			console.log(error);
+		}
+	}
+);
+export const receiveRecipeDescription = createAsyncThunk(
+	"recipes/receiveRecipeDescription",
+	async (recipeId: string, { rejectWithValue }) => {
+		try {
+			const response = await getRecipeDescription(recipeId);
+			if (!response.ok) {
+				return rejectWithValue("Рецепт не получен.");
+			}
+			return await response.json();
+		} catch (error) {
+			if (error instanceof Error) {
+				return rejectWithValue(
+					"Ошибка соединения с сервером. Попробуйте позднее."
+				);
+			}
+			console.log(error);
+		}
+	}
+);
+
+export const receiveRecipeIngredients = createAsyncThunk(
+	"recipe/receiveRecipeIngredients",
+	async (recipeId: string, { rejectWithValue }) => {
+		try {
+			const response = await getRecipeIngredients(recipeId);
+			if (!response.ok) {
+				return rejectWithValue("Ингредиенты не получены.");
+			}
+			return await response.json();
+		} catch (error) {
+			if (error instanceof Error) {
+				return rejectWithValue(
+					"Ошибка соединения с сервером. Попробуйте позднее."
+				);
+			}
+			console.log(error);
+		}
+	}
+);
+
+export const receiveRecipeSteps = createAsyncThunk(
+	"recipes/receiveRecipeSteps",
+	async (recipeId: string, { rejectWithValue }) => {
+		try {
+			const response = await getRecipeSteps(recipeId);
+			if (!response.ok) {
+				return rejectWithValue("Этапы не получены.");
+			}
+			return await response.json();
+		} catch (error) {
+			if (error instanceof Error) {
+				return rejectWithValue(
+					"Ошибка соединения с сервером. Попробуйте позднее."
+				);
+			}
+			console.log(error);
+		}
+	}
+);
+
+export const setToFavorites = createAsyncThunk(
+	"recipes/setToFavorites",
+	async (recipeId: string, { rejectWithValue }) => {
+		try {
+			const response = await postToFavorites(recipeId);
+			if (!response.ok) {
+				return rejectWithValue(
+					"Не удалось включить рецепт в список избранных."
+				);
+			}
+			return await response.json();
+		} catch (error) {
+			if (error instanceof Error) {
+				return rejectWithValue(
+					"Ошибка соединения с сервером. Попробуйте позднее."
+				);
+			}
+			console.log(error);
+		}
+	}
+);
+
+export const getFavoriteList = createAsyncThunk(
+	"recipes/getFavoriteList",
+	async (_, { rejectWithValue }) => {
+		try {
+			const response = await getFavorites();
+			if (!response.ok) {
+				return rejectWithValue("Список не получен.");
 			}
 			return await response.json();
 		} catch (error) {
@@ -232,6 +387,11 @@ const initialState: TRecipesState = {
 	currentRecipeDescription: null,
 	currentRecipeIngredients: [],
 	currentRecipeSteps: [],
+	tags: [],
+	selectedTagValue: null,
+	currentRecipeDescription: null,
+	currentRecipeIngredients: [],
+	currentRecipeSteps: [],
 };
 
 export const recipesSlice = createSlice({
@@ -245,9 +405,18 @@ export const recipesSlice = createSlice({
 			state.selectedTagValue = null;
 		},
 	},
+	reducers: {
+		setSelectedTagValue: (state, action) => {
+			state.selectedTagValue = action.payload;
+		},
+		clearSelectedTagValue: (state) => {
+			state.selectedTagValue = null;
+		},
+	},
 	extraReducers: (builder) => {
 		builder
 			.addCase(getRecipesCategories.fulfilled, (state, action) => {
+				state.categoryList = [];
 				state.categoryList = [];
 				state.categories = action.payload;
 			})
@@ -273,10 +442,32 @@ export const recipesSlice = createSlice({
 			})
 			.addCase(receiveRecipeSteps.fulfilled, (state, action) => {
 				state.currentRecipeSteps = action.payload;
+				state.currentRecipeDescription = null;
+				state.currentRecipeIngredients = [];
+				state.currentRecipeSteps = [];
+			})
+			.addCase(sendNewTag.fulfilled, (state, action) => {
+				console.log(action.payload);
+				state.tags.push(action.payload);
+				state.selectedTagValue = action.payload;
+			})
+			.addCase(receiveTags.fulfilled, (state, action) => {
+				state.tags = action.payload;
+			})
+			.addCase(receiveRecipeDescription.fulfilled, (state, action) => {
+				state.currentRecipeDescription = action.payload;
+			})
+			.addCase(receiveRecipeIngredients.fulfilled, (state, action) => {
+				state.currentRecipeIngredients = action.payload;
+			})
+			.addCase(receiveRecipeSteps.fulfilled, (state, action) => {
+				state.currentRecipeSteps = action.payload;
 			});
 	},
 });
 
+export const { setSelectedTagValue, clearSelectedTagValue } =
+	recipesSlice.actions;
 export const { setSelectedTagValue, clearSelectedTagValue } =
 	recipesSlice.actions;
 export default recipesSlice.reducer;
