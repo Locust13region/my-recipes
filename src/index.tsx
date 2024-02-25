@@ -22,6 +22,7 @@ import Favorites from "./components/pages/favorites.tsx";
 import ShoppingList from "./components/pages/shopping-list.tsx";
 
 import "./index.css";
+import EditRecipe from "./components/pages/edit-recipe.tsx";
 
 const router = createBrowserRouter(
 	[

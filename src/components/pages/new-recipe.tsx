@@ -128,7 +128,6 @@ const NewRecipe: React.FC = () => {
 			</header>
 			<Container
 				component="main"
-				// maxWidth="xs"
 				className="bg-link grow relative overflow-y-scroll"
 			>
 				<CssBaseline />
@@ -140,6 +139,19 @@ const NewRecipe: React.FC = () => {
 					flexDirection={"column"}
 					alignItems={"center"}
 				>
+					<TextField
+						type="search"
+						fullWidth
+						id="recipeTitle"
+						name="recipeTitle"
+						variant="standard"
+						label="Название"
+						value={recipeName}
+						error={!!recipeNameErrorText}
+						helperText={recipeNameErrorText}
+						onChange={handleRecipeName}
+						sx={{ mt: 1 }}
+					/>
 					<TextField
 						select
 						fullWidth
@@ -229,19 +241,6 @@ const NewRecipe: React.FC = () => {
 					<TextField
 						type="search"
 						fullWidth
-						id="recipeTitle"
-						name="recipeTitle"
-						variant="standard"
-						label="Название"
-						value={recipeName}
-						error={!!recipeNameErrorText}
-						helperText={recipeNameErrorText}
-						onChange={handleRecipeName}
-						sx={{ mt: 1 }}
-					/>
-					<TextField
-						type="search"
-						fullWidth
 						id="recipeUrl"
 						name="recipeUrl"
 						variant="standard"
@@ -308,7 +307,7 @@ const NewRecipe: React.FC = () => {
 					}}
 				>
 					<span className="flex text-amber-500 text-3xl material-symbols-outlined">
-						{location.pathname.includes("new") ? "layers_clear" : "delete"}
+						layers_clear
 					</span>
 				</button>
 			</footer>
