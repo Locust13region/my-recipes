@@ -1,10 +1,10 @@
 import { useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "../hook/typed-hooks";
+import { useAppDispatch, useAppSelector } from "../../hook/typed-hooks";
 import { useParams } from "react-router-dom";
-import { receiveRecipeSteps } from "../store/recipes-slice";
+import { receiveRecipeSteps } from "../../store/recipes-slice";
 import { Typography } from "@mui/material";
 
-const RecipeSteps = () => {
+const RecipeStepsInfo = () => {
 	const dispatch = useAppDispatch();
 	const { id } = useParams();
 
@@ -32,4 +32,4 @@ const RecipeSteps = () => {
 	);
 };
 
-export default RecipeSteps;
+export default RecipeStepsInfo;

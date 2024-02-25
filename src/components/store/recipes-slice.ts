@@ -1,5 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
+	deleteFromFavorites,
+	deleteRecipe,
 	getCategories,
 	getCategoryList,
 	getFavorites,
@@ -11,11 +13,7 @@ import {
 	postNewTag,
 	postToFavorites,
 } from "../services/api-request";
-import type {
-	TRecipesState,
-	TNewRecipePostArgs,
-	TNewTagArgs,
-} from "../types/types";
+import type { TRecipesState, TNewTagArgs, TNewRecipe } from "../types/types";
 
 export const getRecipesCategories = createAsyncThunk(
 	"recipes/getCategories",
@@ -36,7 +34,6 @@ export const getRecipesCategories = createAsyncThunk(
 		}
 	}
 );
-
 export const getRecipesList = createAsyncThunk(
 	"recipes/getRecipesList",
 	async (categoryId: number, { rejectWithValue }) => {
@@ -56,7 +53,6 @@ export const getRecipesList = createAsyncThunk(
 		}
 	}
 );
-
 export const receiveTags = createAsyncThunk(
 	"recipes/receiveTags",
 	async (_, { rejectWithValue }) => {
@@ -76,7 +72,6 @@ export const receiveTags = createAsyncThunk(
 		}
 	}
 );
-
 export const sendNewTag = createAsyncThunk(
 	"recipes/sendNewTag",
 	async (newTagArgs: TNewTagArgs, { rejectWithValue }) => {
@@ -96,20 +91,14 @@ export const sendNewTag = createAsyncThunk(
 		}
 	}
 );
-
 export const sendNewRecipe = createAsyncThunk(
 	"recipes/sendNewRecipe",
-	async (
-		newRecipePostArgs: TNewRecipePostArgs,
-		{ getState, rejectWithValue }
-	) => {
+	async (newRecipe: TNewRecipe, { getState, rejectWithValue }) => {
 		const { selectedTagValue } = getState() as TRecipesState;
 		const selectedTag = selectedTagValue?.id ? selectedTagValue.id : null;
 		try {
-			const response = await postNewRecipe(newRecipePostArgs, selectedTag);
+			const response = await postNewRecipe(newRecipe, selectedTag);
 			if (!response.ok) {
-				console.log(response.statusText);
-				console.log(response.statusText);
 				return rejectWithValue("Рецепт не отправлен.");
 			}
 			return await response.json();
@@ -142,7 +131,6 @@ export const receiveRecipeDescription = createAsyncThunk(
 		}
 	}
 );
-
 export const receiveRecipeIngredients = createAsyncThunk(
 	"recipe/receiveRecipeIngredients",
 	async (recipeId: string, { rejectWithValue }) => {
@@ -162,7 +150,6 @@ export const receiveRecipeIngredients = createAsyncThunk(
 		}
 	}
 );
-
 export const receiveRecipeSteps = createAsyncThunk(
 	"recipes/receiveRecipeSteps",
 	async (recipeId: string, { rejectWithValue }) => {
@@ -182,7 +169,6 @@ export const receiveRecipeSteps = createAsyncThunk(
 		}
 	}
 );
-
 export const setToFavorites = createAsyncThunk(
 	"recipes/setToFavorites",
 	async (recipeId: string, { rejectWithValue }) => {
@@ -204,8 +190,7 @@ export const setToFavorites = createAsyncThunk(
 		}
 	}
 );
-
-export const getFavoriteList = createAsyncThunk(
+export const getFavoritesList = createAsyncThunk(
 	"recipes/getFavoriteList",
 	async (_, { rejectWithValue }) => {
 		try {
@@ -214,6 +199,45 @@ export const getFavoriteList = createAsyncThunk(
 				return rejectWithValue("Список не получен.");
 			}
 			return await response.json();
+		} catch (error) {
+			if (error instanceof Error) {
+				return rejectWithValue(
+					"Ошибка соединения с сервером. Попробуйте позднее."
+				);
+			}
+			console.log(error);
+		}
+	}
+);
+export const removeFromFavorites = createAsyncThunk(
+	"recipe/removeFavorite",
+	async (id: string, { rejectWithValue }) => {
+		try {
+			const response = await deleteFromFavorites(id);
+			if (!response.ok) {
+				return rejectWithValue("Не удалён из избранного.");
+			}
+			return;
+		} catch (error) {
+			if (error instanceof Error) {
+				return rejectWithValue(
+					"Ошибка соединения с сервером. Попробуйте позднее."
+				);
+			}
+			console.log(error);
+		}
+	}
+);
+export const removeRecipe = createAsyncThunk(
+	"recipes/removeRecipe",
+	async (id: string, { rejectWithValue }) => {
+		try {
+			const response = await deleteRecipe(id);
+			if (!response.ok) {
+				return rejectWithValue("Рецепт не удален.");
+			}
+
+			return;
 		} catch (error) {
 			if (error instanceof Error) {
 				return rejectWithValue(
@@ -233,6 +257,8 @@ const initialState: TRecipesState = {
 	currentRecipeDescription: null,
 	currentRecipeIngredients: [],
 	currentRecipeSteps: [],
+	favoritesList: [],
+	isEditMode: false,
 };
 
 export const recipesSlice = createSlice({
@@ -244,6 +270,9 @@ export const recipesSlice = createSlice({
 		},
 		clearSelectedTagValue: (state) => {
 			state.selectedTagValue = null;
+		},
+		setEditMode: (state, action) => {
+			state.isEditMode = action.payload;
 		},
 	},
 
@@ -275,10 +304,23 @@ export const recipesSlice = createSlice({
 			})
 			.addCase(receiveRecipeSteps.fulfilled, (state, action) => {
 				state.currentRecipeSteps = action.payload;
+			})
+			.addCase(getFavoritesList.fulfilled, (state, action) => {
+				state.favoritesList = action.payload;
+			})
+			.addCase(removeFromFavorites.fulfilled, (state, action) => {
+				state.favoritesList = state.favoritesList.filter(
+					(item) => item.id !== Number(action.meta.arg)
+				);
+			})
+			.addCase(removeRecipe.fulfilled, (state, action) => {
+				state.categoryList = state.categoryList.filter(
+					(item) => item.id !== Number(action.meta.arg)
+				);
 			});
 	},
 });
 
-export const { setSelectedTagValue, clearSelectedTagValue } =
+export const { setSelectedTagValue, clearSelectedTagValue, setEditMode } =
 	recipesSlice.actions;
 export default recipesSlice.reducer;

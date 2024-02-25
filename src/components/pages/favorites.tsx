@@ -1,66 +1,90 @@
-import { Link, useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { useAppDispatch } from "../hook/typed-hooks";
-import { getFavoriteList } from "../store/recipes-slice";
+import { Link, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "../hook/typed-hooks";
+import { getFavoritesList, removeFromFavorites } from "../store/recipes-slice";
 import MessageModal from "../modal/message";
 import { TRecipe } from "../types/types";
+import { Swiper, SwiperSlide } from "swiper/react";
 
 const Favorites: React.FC = () => {
-	const { state } = useLocation();
 	const dispatch = useAppDispatch();
+	const navigate = useNavigate();
 
 	useEffect(() => {
-		const favoriteList = dispatch(getFavoriteList());
-		favoriteList.then((list) => setFavoriteList(list.payload));
+		dispatch(getFavoritesList());
 	}, [dispatch]);
 
-	const [favoriteList, setFavoriteList] = useState([]);
+	const favoritesList = useAppSelector(
+		(state) => state.recipesState.favoritesList
+	);
 
 	return (
 		<div className="flex flex-col mx-auto max-w-md min-h-screen border">
 			<header className="header-footer-link top-0">
-				<Link
-					to={state?.pathname ? state.pathname : "/"} //////////////////////////////////////////////скорректировать путь
+				<button
 					className="flex"
+					onClick={() => {
+						navigate(-1);
+					}}
 				>
 					<span className=" text-amber-500 text-3xl material-symbols-outlined">
 						arrow_back
 					</span>
-				</Link>
+				</button>
 				<h2 className="leading-3  text-xl">Избранное</h2>
 			</header>
 			<main className="bg-link grow relative overflow-y-scroll">
 				<ul className="mt-2 mb-4 px-7  flex flex-wrap gap-2 justify-between">
-					{favoriteList.map((item: TRecipe, index) => {
+					{favoritesList.map((item: TRecipe) => {
 						const { id, categoryId, name, tags, owner } = item;
 						return (
-							<li
-								key={index}
+							<Swiper
+								key={id}
 								className="w-full h-12 border-b-2 border-b-gray-300 overflow-hidden flex justify-between items-center"
+								creativeEffect={{
+									prev: {
+										shadow: true,
+										translate: [0, 0, -400],
+									},
+									next: {
+										translate: ["100%", 0, 0],
+									},
+								}}
 							>
-								<Link
-									to={`/${categoryId}/${id}`}
-									className="overflow-hidden flex flex-col justify-center items-start"
-								>
-									<h3 className="text-lg  overflow-hidden whitespace-nowrap">
-										{name}
-									</h3>
-									<p className="text-sm  overflow-hidden whitespace-nowrap text-gray-400">
-										{tags[0]?.name ?? ""}
-									</p>
-								</Link>
-								<button
-									className=" flex flex-col justify-center items-center"
-									onClick={() => {}}
-								>
-									<p className="text-xs  text-amber-700 overflow-hidden">
-										Владелец
-									</p>
-									<p className="text-xs overflow-hidden whitespace-nowrap">
-										{owner.email}
-									</p>
-								</button>
-							</li>
+								<SwiperSlide className=" flex flex-row justify-between items-center">
+									<Link
+										to={`/${categoryId}/${id}`}
+										className="overflow-hidden flex flex-col justify-center items-start"
+									>
+										<h3 className="text-lg  overflow-hidden whitespace-nowrap">
+											{name}
+										</h3>
+										<p className="text-sm  overflow-hidden whitespace-nowrap text-gray-400">
+											{tags[0]?.name ?? ""}
+										</p>
+									</Link>
+									<div className=" flex flex-col justify-center items-center">
+										<p className="text-xs  text-amber-700 overflow-hidden">
+											Владелец
+										</p>
+										<p className="text-xs overflow-hidden whitespace-nowrap">
+											{owner.email}
+										</p>
+									</div>
+								</SwiperSlide>
+								<SwiperSlide className=" flex flex-row justify-between items-center">
+									<button
+										className="w-full flex justify-center items-center"
+										onClick={() => {
+											dispatch(removeFromFavorites(String(id)));
+										}}
+									>
+										<span className="text-amber-500 text-3xl material-symbols-outlined">
+											heart_minus
+										</span>
+									</button>
+								</SwiperSlide>
+							</Swiper>
 						);
 					})}
 				</ul>
@@ -69,7 +93,7 @@ const Favorites: React.FC = () => {
 				<button
 					className="leading-3  text-xl"
 					onClick={() => {
-						console.log("очищаем всё или по-одному?");
+						console.log("очищаем всё!");
 					}}
 				>
 					Очистить

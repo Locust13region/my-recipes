@@ -63,18 +63,12 @@ export type TRecipesState = {
 	currentRecipeDescription: TRecipe | null;
 	currentRecipeIngredients: TRecipeIngredients[];
 	currentRecipeSteps: TRecipeSteps[];
-};
-export type TNewRecipePostArgs = {
-	accessToken: string;
-	newRecipe: TNewRecipe;
+	favoritesList: TRecipe[];
+	isEditMode: boolean;
 };
 export type TNewTagArgs = {
 	accessToken: string;
 	name: string;
-};
-export type TRecipeDescriptionArgs = {
-	accessToken: string;
-	id?: string;
 };
 export type TRecipeIngredients = {
 	id: number;

@@ -1,11 +1,11 @@
 import { useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "../hook/typed-hooks";
+import { useAppDispatch, useAppSelector } from "../../hook/typed-hooks";
 import { useParams } from "react-router-dom";
-import { receiveRecipeIngredients } from "../store/recipes-slice";
+import { receiveRecipeIngredients } from "../../store/recipes-slice";
 import { Checkbox, FormControlLabel, FormGroup } from "@mui/material";
 import { amber } from "@mui/material/colors";
 
-const RecipeIngredients = () => {
+const RecipeIngredientsInfo = () => {
 	const dispatch = useAppDispatch();
 	const { id } = useParams();
 
@@ -42,4 +42,4 @@ const RecipeIngredients = () => {
 	);
 };
 
-export default RecipeIngredients;
+export default RecipeIngredientsInfo;

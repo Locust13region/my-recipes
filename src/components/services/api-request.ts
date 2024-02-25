@@ -1,8 +1,4 @@
-import type {
-	TCredentials,
-	TNewRecipePostArgs,
-	TNewTagArgs,
-} from "../types/types";
+import type { TCredentials, TNewRecipe, TNewTagArgs } from "../types/types";
 
 const urlBase = "https://recipes-api.somee.com/";
 const urlRegistration = urlBase + "register";
@@ -15,8 +11,9 @@ const urlTag = urlBase + "tags/";
 const urlRecipe = urlBase + "recipes/";
 const urlIngredients = urlBase + "ingredients?RecipeId=";
 const urlSteps = urlBase + "steps?RecipeId=";
-const urlPostFavorites = urlBase + "favourites";
 const urlGetFavorites = urlBase + "recipes?IsFavourite=true";
+const urlPostFavorites = urlBase + "favourites";
+const urlDeleteFavorites = urlBase + "favourites/";
 
 export enum UrlUser {
 	REGISTRATION = urlRegistration,
@@ -89,15 +86,14 @@ export const postNewTag = async (newTagArgs: TNewTagArgs) => {
 };
 
 export const postNewRecipe = async (
-	newRecipePostArgs: TNewRecipePostArgs,
+	newRecipe: TNewRecipe,
 	tag: number | null
 ) => {
 	const tagsArray = tag ? [tag] : [];
-	const { accessToken, newRecipe } = newRecipePostArgs;
 	return await fetch(urlNewRecipe, {
 		method: "POST",
 		headers: {
-			Authorization: `Bearer ${accessToken}`,
+			Authorization: `Bearer ${getAccessToken()}`,
 			"Content-Type": "application/json",
 		},
 		body: JSON.stringify({ ...newRecipe, tagIds: tagsArray }),
@@ -141,6 +137,22 @@ export const postToFavorites = async (recipeId: string) => {
 
 export const getFavorites = async () => {
 	return await fetch(urlGetFavorites, {
+		headers: {
+			Authorization: `Bearer ${getAccessToken()}`,
+		},
+	});
+};
+export const deleteFromFavorites = async (recipeId: string) => {
+	return await fetch(urlDeleteFavorites + recipeId, {
+		method: "DELETE",
+		headers: {
+			Authorization: `Bearer ${getAccessToken()}`,
+		},
+	});
+};
+export const deleteRecipe = async (recipeId: string) => {
+	return await fetch(urlRecipe + recipeId, {
+		method: "DELETE",
 		headers: {
 			Authorization: `Bearer ${getAccessToken()}`,
 		},

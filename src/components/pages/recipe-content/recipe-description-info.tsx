@@ -1,7 +1,7 @@
 import { Link, Typography } from "@mui/material";
-import { useAppSelector } from "../hook/typed-hooks";
+import { useAppSelector } from "../../hook/typed-hooks";
 
-const RecipeDescription = () => {
+const RecipeDescriptionInfo = () => {
 	return (
 		<>
 			<Link
@@ -20,4 +20,4 @@ const RecipeDescription = () => {
 	);
 };
 
-export default RecipeDescription;
+export default RecipeDescriptionInfo;

@@ -21,10 +21,14 @@ import { createFilterOptions } from "@mui/material";
 
 const filter = createFilterOptions<TTag>();
 
-const NewRecipe: React.FC = () => {
+const EditRecipe: React.FC = () => {
 	const params = useParams();
 	const currentCategory = Number(params.categoryId);
 	const location = useLocation();
+
+	console.log("params", params);
+	console.log("location", location);
+
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 	const accessToken = useAppSelector(
@@ -96,12 +100,11 @@ const NewRecipe: React.FC = () => {
 			steps: recipeSteps,
 			ingredients: recipeIngredients,
 		};
-		const newRecipeResult = dispatch(sendNewRecipe(newRecipe));
+		const newRecipeResult = dispatch(sendNewRecipe({ accessToken, newRecipe }));
 		newRecipeResult.then((result) => {
 			clearAllFields();
-			navigate(`/${result.payload.categoryId}/${result.payload.id}`, {
-				replace: true,
-			});
+			console.log(result);
+			navigate(`/${result.payload.categoryId}/${result.payload.id}`);
 		});
 	};
 	////////////////////////////////////////CLEAR ALL///////////////////////////////////
@@ -118,14 +121,15 @@ const NewRecipe: React.FC = () => {
 		<div className="flex flex-col mx-auto max-w-md min-h-screen border">
 			<header className="header-footer-link top-0">
 				<Link
-					to={`/${params.categoryId}`}
+					to={`/${params}`}
+					// to={`/${params.categoryId}`}
 					className="flex grow"
 				>
 					<span className=" text-amber-500 text-3xl material-symbols-outlined">
 						arrow_back
 					</span>
 				</Link>
-				<h2 className="leading-3 text-xl">Новый рецепт</h2>
+				<h2 className="leading-3 text-xl">Редактирование</h2>
 			</header>
 			<Container
 				component="main"
@@ -143,7 +147,6 @@ const NewRecipe: React.FC = () => {
 					<TextField
 						type="search"
 						fullWidth
-						autoFocus
 						id="recipeTitle"
 						name="recipeTitle"
 						variant="standard"
@@ -309,7 +312,7 @@ const NewRecipe: React.FC = () => {
 					}}
 				>
 					<span className="flex text-amber-500 text-3xl material-symbols-outlined">
-						layers_clear
+						{location.pathname.includes("new") ? "layers_clear" : "delete"}
 					</span>
 				</button>
 			</footer>
@@ -318,4 +321,4 @@ const NewRecipe: React.FC = () => {
 	);
 };
 
-export default NewRecipe;
+export default EditRecipe;

@@ -16,6 +16,7 @@ import {
 } from "@mui/material";
 import {
 	receiveRecipeDescription,
+	setEditMode,
 	setToFavorites,
 } from "../store/recipes-slice";
 import MessageModal from "../modal/message";
@@ -23,6 +24,7 @@ import MessageModal from "../modal/message";
 const Recipe: React.FC = () => {
 	const { id, categoryId } = useParams();
 	const { pathname } = useLocation();
+
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 
@@ -33,6 +35,7 @@ const Recipe: React.FC = () => {
 	const isFavorite = useAppSelector(
 		(state) => state.recipesState.currentRecipeDescription?.isFavourite
 	);
+	const isEditMode = useAppSelector((state) => state.recipesState.isEditMode);
 
 	//////////////////////////////////////HANDLE BUTTONS//////////////////////
 	const [alignment, setAlignment] = useState(pathname);
@@ -42,21 +45,27 @@ const Recipe: React.FC = () => {
 	) => {
 		if (newAlignment !== null) {
 			setAlignment(newAlignment);
-			navigate(newAlignment, { state: { pathname } });
+			dispatch(setEditMode(false));
+			navigate(newAlignment, {
+				state: { pathname, isEditMode },
+				replace: true,
+			});
 		}
 	};
 
 	return (
 		<div className="flex flex-col mx-auto max-w-md min-h-screen border">
 			<header className="header-footer-link top-0">
-				<Link
-					to={`/${categoryId}`}
+				<button
+					onClick={() => {
+						navigate(-1);
+					}}
 					className="flex"
 				>
 					<span className=" text-amber-500 text-3xl material-symbols-outlined">
 						arrow_back
 					</span>
-				</Link>
+				</button>
 				<div className="overflow-hidden flex flex-col justify-center items-start">
 					<h2 className="leading-5 text-xl overflow-hidden whitespace-nowrap">
 						{useAppSelector(
@@ -159,40 +168,61 @@ const Recipe: React.FC = () => {
 				</Box>
 			</Container>
 			<footer className="header-footer-link bottom-0">
-				{alignment.includes("ingredients") ? (
-					<Link
-						to={"/shopping"}
-						state={{ pathname }}
-						className="leading-3  text-xl"
-						onClick={() => {
-							console.log("В список покупок");
-						}}
-					>
-						В список покупок
-					</Link>
+				{isEditMode ? (
+					<>
+						<button
+							className="leading-3  text-xl"
+							onClick={() => {
+								dispatch(setEditMode(false));
+							}}
+						>
+							Сохранить
+						</button>
+						<button
+							className=""
+							onClick={() => {}}
+						>
+							<span className="flex text-amber-500 text-3xl material-symbols-outlined">
+								layers_clear
+							</span>
+						</button>
+					</>
 				) : (
-					<Link
-						to={"/favorites"}
-						state={{ pathname }}
-						className="leading-3  text-xl"
-						onClick={() => {
-							!isFavorite ? id && dispatch(setToFavorites(id)) : null;
-							navigate("/favorites");
-						}}
-					>
-						{!isFavorite ? "В избранное" : "В избранном"}
-					</Link>
+					<>
+						{alignment.includes("ingredients") ? (
+							<Link
+								to={"/shopping"}
+								state={{ pathname }}
+								className="leading-3  text-xl"
+								onClick={() => {
+									console.log("В список покупок");
+								}}
+							>
+								В список покупок
+							</Link>
+						) : (
+							<button
+								className="leading-3  text-xl"
+								onClick={() => {
+									!isFavorite ? id && dispatch(setToFavorites(id)) : null;
+									navigate("/favorites", { replace: true });
+								}}
+							>
+								{!isFavorite ? "В избранное" : "В избранном"}
+							</button>
+						)}
+						<button
+							className=""
+							onClick={() => {
+								dispatch(setEditMode(true));
+							}}
+						>
+							<span className="flex text-amber-500 text-3xl material-symbols-outlined">
+								border_color
+							</span>
+						</button>
+					</>
 				)}
-				<button
-					className=""
-					onClick={() => {
-						console.log("edit recipe");
-					}}
-				>
-					<span className="flex text-amber-500 text-3xl material-symbols-outlined">
-						border_color
-					</span>
-				</button>
 			</footer>
 			<MessageModal />
 		</div>
