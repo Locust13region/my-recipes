@@ -1,10 +1,11 @@
-import { useLocation } from "react-router-dom";
 import RecipeIngredientsInfo from "./recipe-ingredients-info";
+import RecipeIngredientsEdit from "./recipe-ingredients-edit";
+import { useAppSelector } from "../../hook/typed-hooks";
 
 const RecipeIngredients = () => {
-	const location = useLocation();
-	console.log("ingredients location", location);
-	return <RecipeIngredientsInfo />;
+	const isEditMode = useAppSelector((state) => state.recipesState.isEditMode);
+
+	return isEditMode ? <RecipeIngredientsEdit /> : <RecipeIngredientsInfo />;
 };
 
 export default RecipeIngredients;

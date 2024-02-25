@@ -1,6 +1,14 @@
+import { createFilterOptions } from "@mui/material";
+import Autocomplete from "@mui/material/Autocomplete";
+import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
+import CssBaseline from "@mui/material/CssBaseline";
+import MenuItem from "@mui/material/MenuItem";
+import TextField from "@mui/material/TextField";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../hook/typed-hooks";
+import MessageModal from "../modal/message";
 import {
 	clearSelectedTagValue,
 	getRecipesCategories,
@@ -9,15 +17,7 @@ import {
 	sendNewTag,
 	setSelectedTagValue,
 } from "../store/recipes-slice";
-import MessageModal from "../modal/message";
-import type { TIngredients, TStep, TNewRecipe, TTag } from "../types/types";
-import Container from "@mui/material/Container";
-import CssBaseline from "@mui/material/CssBaseline";
-import TextField from "@mui/material/TextField";
-import Box from "@mui/material/Box";
-import MenuItem from "@mui/material/MenuItem";
-import Autocomplete from "@mui/material/Autocomplete";
-import { createFilterOptions } from "@mui/material";
+import type { TIngredients, TNewRecipe, TStep, TTag } from "../types/types";
 
 const filter = createFilterOptions<TTag>();
 
@@ -190,14 +190,9 @@ const NewRecipe: React.FC = () => {
 						)}
 						onChange={(_event, newValue) => {
 							if (typeof newValue === "string") {
-								console.log("add as string", newValue);
-								dispatch(sendNewTag({ accessToken, name: newValue }));
-								console.log(tags);
+								dispatch(sendNewTag(newValue));
 							} else if (newValue && newValue.inputValue) {
-								console.log("add as object", newValue);
-								dispatch(
-									sendNewTag({ accessToken, name: newValue.inputValue })
-								);
+								dispatch(sendNewTag(newValue.inputValue));
 							} else {
 								dispatch(setSelectedTagValue(newValue));
 							}

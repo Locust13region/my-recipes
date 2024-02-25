@@ -1,4 +1,4 @@
-import type { TCredentials, TNewRecipe, TNewTagArgs } from "../types/types";
+import type { TCredentials, TNewRecipe } from "../types/types";
 
 const urlBase = "https://recipes-api.somee.com/";
 const urlRegistration = urlBase + "register";
@@ -73,12 +73,11 @@ export const getTags = async () => {
 	});
 };
 
-export const postNewTag = async (newTagArgs: TNewTagArgs) => {
-	const { accessToken, name } = newTagArgs;
+export const postNewTag = async (name: string) => {
 	return await fetch(urlTag, {
 		method: "POST",
 		headers: {
-			Authorization: `Bearer ${accessToken}`,
+			Authorization: `Bearer ${getAccessToken()}`,
 			"Content-Type": "application/json",
 		},
 		body: JSON.stringify({ name }),

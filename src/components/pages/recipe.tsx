@@ -15,6 +15,7 @@ import {
 	ToggleButtonGroup,
 } from "@mui/material";
 import {
+	getRecipesCategories,
 	receiveRecipeDescription,
 	setEditMode,
 	setToFavorites,
@@ -29,6 +30,7 @@ const Recipe: React.FC = () => {
 	const navigate = useNavigate();
 
 	useEffect(() => {
+		dispatch(getRecipesCategories());
 		dispatch(receiveRecipeDescription(String(id)));
 	}, [dispatch, id]);
 
@@ -58,6 +60,7 @@ const Recipe: React.FC = () => {
 			<header className="header-footer-link top-0">
 				<button
 					onClick={() => {
+						dispatch(setEditMode(false));
 						navigate(-1);
 					}}
 					className="flex"

@@ -13,7 +13,7 @@ import {
 	postNewTag,
 	postToFavorites,
 } from "../services/api-request";
-import type { TRecipesState, TNewTagArgs, TNewRecipe } from "../types/types";
+import type { TRecipesState, TNewRecipe } from "../types/types";
 
 export const getRecipesCategories = createAsyncThunk(
 	"recipes/getCategories",
@@ -74,9 +74,9 @@ export const receiveTags = createAsyncThunk(
 );
 export const sendNewTag = createAsyncThunk(
 	"recipes/sendNewTag",
-	async (newTagArgs: TNewTagArgs, { rejectWithValue }) => {
+	async (name: string, { rejectWithValue }) => {
 		try {
-			const response = await postNewTag(newTagArgs);
+			const response = await postNewTag(name);
 			if (!response.ok) {
 				return rejectWithValue("Теги не получены.");
 			}
@@ -289,7 +289,6 @@ export const recipesSlice = createSlice({
 				state.currentRecipeSteps = [];
 			})
 			.addCase(sendNewTag.fulfilled, (state, action) => {
-				console.log(action.payload);
 				state.tags.push(action.payload);
 				state.selectedTagValue = action.payload;
 			})

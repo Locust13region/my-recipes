@@ -66,10 +66,6 @@ export type TRecipesState = {
 	favoritesList: TRecipe[];
 	isEditMode: boolean;
 };
-export type TNewTagArgs = {
-	accessToken: string;
-	name: string;
-};
 export type TRecipeIngredients = {
 	id: number;
 	name: string;
