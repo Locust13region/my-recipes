@@ -1,4 +1,4 @@
-import type { TCredentials, TNewRecipe } from "../types/types";
+import type { TCredentials, TNewRecipe, TRecipe } from "../types/types";
 
 const urlBase = "https://recipes-api.somee.com/";
 const urlRegistration = urlBase + "register";
@@ -155,5 +155,16 @@ export const deleteRecipe = async (recipeId: string) => {
 		headers: {
 			Authorization: `Bearer ${getAccessToken()}`,
 		},
+	});
+};
+export const putUpdatedRecipeDescription = async (updatedRecipe: TRecipe) => {
+	const { id, name, categoryId, tags, source, description } = updatedRecipe;
+	return await fetch(urlRecipe + id, {
+		method: "PUT",
+		headers: {
+			Authorization: `Bearer ${getAccessToken()}`,
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({ name, categoryId, tags, source, description }),
 	});
 };

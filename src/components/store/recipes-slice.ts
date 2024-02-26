@@ -12,8 +12,10 @@ import {
 	postNewRecipe,
 	postNewTag,
 	postToFavorites,
+	putUpdatedRecipeDescription,
 } from "../services/api-request";
 import type { TRecipesState, TNewRecipe } from "../types/types";
+import { RootState } from "./store";
 
 export const getRecipesCategories = createAsyncThunk(
 	"recipes/getCategories",
@@ -94,7 +96,8 @@ export const sendNewTag = createAsyncThunk(
 export const sendNewRecipe = createAsyncThunk(
 	"recipes/sendNewRecipe",
 	async (newRecipe: TNewRecipe, { getState, rejectWithValue }) => {
-		const { selectedTagValue } = getState() as TRecipesState;
+		const { recipesState } = getState() as RootState;
+		const { selectedTagValue } = recipesState;
 		const selectedTag = selectedTagValue?.id ? selectedTagValue.id : null;
 		try {
 			const response = await postNewRecipe(newRecipe, selectedTag);
@@ -248,6 +251,28 @@ export const removeRecipe = createAsyncThunk(
 		}
 	}
 );
+export const updateRecipeDescription = createAsyncThunk(
+	"recipes/updateRecipeDescription",
+	async (_, { getState, rejectWithValue }) => {
+		const { recipesState } = getState() as RootState;
+		try {
+			const response = await putUpdatedRecipeDescription(
+				recipesState.editableRecipeDescription!
+			);
+			if (!response.ok) {
+				return rejectWithValue("Рецепт не обновлен.");
+			}
+			return await response.json();
+		} catch (error) {
+			if (error instanceof Error) {
+				return rejectWithValue(
+					"Ошибка соединения с сервером. Попробуйте позднее."
+				);
+			}
+			console.log(error);
+		}
+	}
+);
 
 const initialState: TRecipesState = {
 	categories: [],
@@ -255,10 +280,12 @@ const initialState: TRecipesState = {
 	tags: [],
 	selectedTagValue: null,
 	currentRecipeDescription: null,
+	editableRecipeDescription: null,
 	currentRecipeIngredients: [],
 	currentRecipeSteps: [],
 	favoritesList: [],
 	isEditMode: false,
+	recipeFieldErrorText: "",
 };
 
 export const recipesSlice = createSlice({
@@ -268,11 +295,20 @@ export const recipesSlice = createSlice({
 		setSelectedTagValue: (state, action) => {
 			state.selectedTagValue = action.payload;
 		},
-		clearSelectedTagValue: (state) => {
-			state.selectedTagValue = null;
+		clearSelectedTagValue: (state, action) => {
+			state.selectedTagValue = action.payload;
 		},
 		setEditMode: (state, action) => {
 			state.isEditMode = action.payload;
+		},
+		setEditableRecipeDescription: (state, action) => {
+			state.editableRecipeDescription = {
+				...state.editableRecipeDescription,
+				...action.payload,
+			};
+		},
+		setRecipeFieldErrorText: (state, action) => {
+			state.recipeFieldErrorText = action.payload;
 		},
 	},
 
@@ -285,6 +321,9 @@ export const recipesSlice = createSlice({
 			.addCase(getRecipesList.fulfilled, (state, action) => {
 				state.categoryList = action.payload;
 				state.currentRecipeDescription = null;
+				state.editableRecipeDescription = null;
+				state.selectedTagValue = null;
+				state.tags = [];
 				state.currentRecipeIngredients = [];
 				state.currentRecipeSteps = [];
 			})
@@ -297,6 +336,7 @@ export const recipesSlice = createSlice({
 			})
 			.addCase(receiveRecipeDescription.fulfilled, (state, action) => {
 				state.currentRecipeDescription = action.payload;
+				state.editableRecipeDescription = action.payload;
 			})
 			.addCase(receiveRecipeIngredients.fulfilled, (state, action) => {
 				state.currentRecipeIngredients = action.payload;
@@ -320,6 +360,11 @@ export const recipesSlice = createSlice({
 	},
 });
 
-export const { setSelectedTagValue, clearSelectedTagValue, setEditMode } =
-	recipesSlice.actions;
+export const {
+	setSelectedTagValue,
+	clearSelectedTagValue,
+	setEditMode,
+	setEditableRecipeDescription,
+	setRecipeFieldErrorText,
+} = recipesSlice.actions;
 export default recipesSlice.reducer;

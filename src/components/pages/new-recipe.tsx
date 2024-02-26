@@ -97,16 +97,17 @@ const NewRecipe: React.FC = () => {
 			ingredients: recipeIngredients,
 		};
 		const newRecipeResult = dispatch(sendNewRecipe(newRecipe));
-		newRecipeResult.then((result) => {
+		newRecipeResult.then(({ payload }) => {
+			console.log(payload);
 			clearAllFields();
-			navigate(`/${result.payload.categoryId}/${result.payload.id}`, {
+			navigate(`/${payload.categoryId}/${payload.id}`, {
 				replace: true,
 			});
 		});
 	};
 	////////////////////////////////////////CLEAR ALL///////////////////////////////////
 	const clearAllFields = () => {
-		dispatch(clearSelectedTagValue());
+		dispatch(clearSelectedTagValue(null));
 		setRecipeName("");
 		setRecipeUrl("");
 		setRecipeDescription("");
@@ -168,9 +169,9 @@ const NewRecipe: React.FC = () => {
 						}}
 						sx={{ mt: 1 }}
 					>
-						{categories.map((category, index) => (
+						{categories.map((category) => (
 							<MenuItem
-								key={index}
+								key={category.id}
 								value={category.id}
 							>
 								{category.name}

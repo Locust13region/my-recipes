@@ -61,10 +61,12 @@ export type TRecipesState = {
 	tags: TTag[];
 	selectedTagValue: TTag | null;
 	currentRecipeDescription: TRecipe | null;
+	editableRecipeDescription: TRecipe | null;
 	currentRecipeIngredients: TRecipeIngredients[];
 	currentRecipeSteps: TRecipeSteps[];
 	favoritesList: TRecipe[];
 	isEditMode: boolean;
+	recipeFieldErrorText: string;
 };
 export type TRecipeIngredients = {
 	id: number;

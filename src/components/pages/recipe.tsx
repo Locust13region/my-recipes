@@ -15,10 +15,14 @@ import {
 	ToggleButtonGroup,
 } from "@mui/material";
 import {
+	clearSelectedTagValue,
 	getRecipesCategories,
 	receiveRecipeDescription,
 	setEditMode,
+	setEditableRecipeDescription,
+	setRecipeFieldErrorText,
 	setToFavorites,
+	updateRecipeDescription,
 } from "../store/recipes-slice";
 import MessageModal from "../modal/message";
 
@@ -48,11 +52,30 @@ const Recipe: React.FC = () => {
 		if (newAlignment !== null) {
 			setAlignment(newAlignment);
 			dispatch(setEditMode(false));
+			dispatch(setRecipeFieldErrorText(""));
 			navigate(newAlignment, {
 				state: { pathname, isEditMode },
 				replace: true,
 			});
 		}
+	};
+	////////////////////////////////////////UPDATE/////////////////////////////////////
+	const editableName = useAppSelector(
+		(state) => state.recipesState.editableRecipeDescription?.name
+	);
+	const handleRecipeUpdate = async () => {
+		if (!editableName) {
+			dispatch(setRecipeFieldErrorText("Необходимо название рецепта"));
+			return;
+		}
+		dispatch(setEditMode(false));
+		dispatch(updateRecipeDescription());
+	};
+	////////////////////////////////////////CLEAR ALL///////////////////////////////////
+	const clearFields = () => {
+		dispatch(clearSelectedTagValue(null));
+		dispatch(setEditableRecipeDescription({ source: "" }));
+		dispatch(setEditableRecipeDescription({ description: "" }));
 	};
 
 	return (
@@ -176,14 +199,16 @@ const Recipe: React.FC = () => {
 						<button
 							className="leading-3  text-xl"
 							onClick={() => {
-								dispatch(setEditMode(false));
+								handleRecipeUpdate();
 							}}
 						>
 							Сохранить
 						</button>
 						<button
 							className=""
-							onClick={() => {}}
+							onClick={() => {
+								clearFields();
+							}}
 						>
 							<span className="flex text-amber-500 text-3xl material-symbols-outlined">
 								layers_clear
@@ -218,6 +243,7 @@ const Recipe: React.FC = () => {
 							className=""
 							onClick={() => {
 								dispatch(setEditMode(true));
+								dispatch(setRecipeFieldErrorText(""));
 							}}
 						>
 							<span className="flex text-amber-500 text-3xl material-symbols-outlined">
