@@ -27,12 +27,12 @@ export const getRecipesCategories = createAsyncThunk(
 			}
 			return await response.json();
 		} catch (error) {
+			console.log(error);
 			if (error instanceof Error) {
 				return rejectWithValue(
 					"Ошибка соединения с сервером. Попробуйте позднее."
 				);
 			}
-			console.log(error);
 		}
 	}
 );
@@ -46,12 +46,12 @@ export const getRecipesList = createAsyncThunk(
 			}
 			return await response.json();
 		} catch (error) {
+			console.log(error);
 			if (error instanceof Error) {
 				return rejectWithValue(
 					"Ошибка соединения с сервером. Попробуйте позднее."
 				);
 			}
-			console.log(error);
 		}
 	}
 );
@@ -65,12 +65,12 @@ export const receiveTags = createAsyncThunk(
 			}
 			return await response.json();
 		} catch (error) {
+			console.log(error);
 			if (error instanceof Error) {
 				return rejectWithValue(
 					"Ошибка соединения с сервером. Попробуйте позднее."
 				);
 			}
-			console.log(error);
 		}
 	}
 );
@@ -84,12 +84,12 @@ export const sendNewTag = createAsyncThunk(
 			}
 			return await response.json();
 		} catch (error) {
+			console.log(error);
 			if (error instanceof Error) {
 				return rejectWithValue(
 					"Ошибка соединения с сервером. Попробуйте позднее."
 				);
 			}
-			console.log(error);
 		}
 	}
 );
@@ -106,12 +106,12 @@ export const sendNewRecipe = createAsyncThunk(
 			}
 			return await response.json();
 		} catch (error) {
+			console.log(error);
 			if (error instanceof Error) {
 				return rejectWithValue(
 					"Ошибка соединения с сервером. Попробуйте позднее."
 				);
 			}
-			console.log(error);
 		}
 	}
 );
@@ -125,12 +125,12 @@ export const receiveRecipeDescription = createAsyncThunk(
 			}
 			return await response.json();
 		} catch (error) {
+			console.log(error);
 			if (error instanceof Error) {
 				return rejectWithValue(
 					"Ошибка соединения с сервером. Попробуйте позднее."
 				);
 			}
-			console.log(error);
 		}
 	}
 );
@@ -144,12 +144,12 @@ export const receiveRecipeIngredients = createAsyncThunk(
 			}
 			return await response.json();
 		} catch (error) {
+			console.log(error);
 			if (error instanceof Error) {
 				return rejectWithValue(
 					"Ошибка соединения с сервером. Попробуйте позднее."
 				);
 			}
-			console.log(error);
 		}
 	}
 );
@@ -163,12 +163,12 @@ export const receiveRecipeSteps = createAsyncThunk(
 			}
 			return await response.json();
 		} catch (error) {
+			console.log(error);
 			if (error instanceof Error) {
 				return rejectWithValue(
 					"Ошибка соединения с сервером. Попробуйте позднее."
 				);
 			}
-			console.log(error);
 		}
 	}
 );
@@ -184,12 +184,12 @@ export const setToFavorites = createAsyncThunk(
 			}
 			return await response.json();
 		} catch (error) {
+			console.log(error);
 			if (error instanceof Error) {
 				return rejectWithValue(
 					"Ошибка соединения с сервером. Попробуйте позднее."
 				);
 			}
-			console.log(error);
 		}
 	}
 );
@@ -203,12 +203,12 @@ export const getFavoritesList = createAsyncThunk(
 			}
 			return await response.json();
 		} catch (error) {
+			console.log(error);
 			if (error instanceof Error) {
 				return rejectWithValue(
 					"Ошибка соединения с сервером. Попробуйте позднее."
 				);
 			}
-			console.log(error);
 		}
 	}
 );
@@ -222,12 +222,12 @@ export const removeFromFavorites = createAsyncThunk(
 			}
 			return;
 		} catch (error) {
+			console.log(error);
 			if (error instanceof Error) {
 				return rejectWithValue(
 					"Ошибка соединения с сервером. Попробуйте позднее."
 				);
 			}
-			console.log(error);
 		}
 	}
 );
@@ -242,12 +242,12 @@ export const removeRecipe = createAsyncThunk(
 
 			return;
 		} catch (error) {
+			console.log(error);
 			if (error instanceof Error) {
 				return rejectWithValue(
 					"Ошибка соединения с сервером. Попробуйте позднее."
 				);
 			}
-			console.log(error);
 		}
 	}
 );
@@ -255,21 +255,26 @@ export const updateRecipeDescription = createAsyncThunk(
 	"recipes/updateRecipeDescription",
 	async (_, { getState, rejectWithValue }) => {
 		const { recipesState } = getState() as RootState;
+		const { selectedTagValue } = recipesState;
+		const selectedTag = selectedTagValue?.id
+			? selectedTagValue.id
+			: recipesState.editableRecipeDescription?.tags[0].id;
 		try {
 			const response = await putUpdatedRecipeDescription(
-				recipesState.editableRecipeDescription!
+				recipesState.editableRecipeDescription!,
+				selectedTag || null
 			);
 			if (!response.ok) {
 				return rejectWithValue("Рецепт не обновлен.");
 			}
 			return await response.json();
 		} catch (error) {
+			console.log(error);
 			if (error instanceof Error) {
 				return rejectWithValue(
 					"Ошибка соединения с сервером. Попробуйте позднее."
 				);
 			}
-			console.log(error);
 		}
 	}
 );
@@ -356,6 +361,17 @@ export const recipesSlice = createSlice({
 				state.categoryList = state.categoryList.filter(
 					(item) => item.id !== Number(action.meta.arg)
 				);
+			})
+			.addCase(updateRecipeDescription.pending, (state) => {
+				state.isEditMode = false;
+			})
+			.addCase(updateRecipeDescription.fulfilled, (state, action) => {
+				state.currentRecipeDescription!.name = action.payload.name;
+				state.currentRecipeDescription!.categoryId = action.payload.categoryId;
+				state.currentRecipeDescription!.source = action.payload.source;
+				state.currentRecipeDescription!.description =
+					action.payload.description;
+				//////////////////////////////ADD TAG UPDATE////////////////////////
 			});
 	},
 });

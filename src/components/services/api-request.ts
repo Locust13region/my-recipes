@@ -39,7 +39,6 @@ export const userRequest = async (credentials: TCredentials, url: UrlUser) => {
 		body: JSON.stringify({ ...credentials }),
 	});
 };
-
 export const tokenRefresh = async (refreshToken: string) => {
 	return await fetch(urlRefreshToken, {
 		method: "POST",
@@ -49,14 +48,12 @@ export const tokenRefresh = async (refreshToken: string) => {
 		body: JSON.stringify({ refreshToken: refreshToken }),
 	});
 };
-
 export const getCategories = async () => {
 	return await fetch(urlCategories);
 };
 export const getPath = (suffix: string) => {
 	return urlBase + suffix;
 };
-
 export const getCategoryList = async (categoryId: number) => {
 	return await fetch(urlCategoryList + categoryId, {
 		headers: {
@@ -64,7 +61,6 @@ export const getCategoryList = async (categoryId: number) => {
 		},
 	});
 };
-
 export const getTags = async () => {
 	return await fetch(urlTag, {
 		headers: {
@@ -72,7 +68,6 @@ export const getTags = async () => {
 		},
 	});
 };
-
 export const postNewTag = async (name: string) => {
 	return await fetch(urlTag, {
 		method: "POST",
@@ -83,7 +78,6 @@ export const postNewTag = async (name: string) => {
 		body: JSON.stringify({ name }),
 	});
 };
-
 export const postNewRecipe = async (
 	newRecipe: TNewRecipe,
 	tag: number | null
@@ -98,7 +92,6 @@ export const postNewRecipe = async (
 		body: JSON.stringify({ ...newRecipe, tagIds: tagsArray }),
 	});
 };
-
 export const getRecipeDescription = async (recipeId: string) => {
 	return await fetch(urlRecipe + recipeId, {
 		headers: {
@@ -106,7 +99,6 @@ export const getRecipeDescription = async (recipeId: string) => {
 		},
 	});
 };
-
 export const getRecipeIngredients = async (recipeId: string) => {
 	return await fetch(urlIngredients + recipeId, {
 		headers: {
@@ -114,7 +106,6 @@ export const getRecipeIngredients = async (recipeId: string) => {
 		},
 	});
 };
-
 export const getRecipeSteps = async (recipeId: string) => {
 	return await fetch(urlSteps + recipeId, {
 		headers: {
@@ -122,7 +113,6 @@ export const getRecipeSteps = async (recipeId: string) => {
 		},
 	});
 };
-
 export const postToFavorites = async (recipeId: string) => {
 	return await fetch(urlPostFavorites, {
 		method: "POST",
@@ -133,7 +123,6 @@ export const postToFavorites = async (recipeId: string) => {
 		body: JSON.stringify({ recipeId }),
 	});
 };
-
 export const getFavorites = async () => {
 	return await fetch(urlGetFavorites, {
 		headers: {
@@ -157,14 +146,18 @@ export const deleteRecipe = async (recipeId: string) => {
 		},
 	});
 };
-export const putUpdatedRecipeDescription = async (updatedRecipe: TRecipe) => {
-	const { id, name, categoryId, tags, source, description } = updatedRecipe;
+export const putUpdatedRecipeDescription = async (
+	updatedRecipe: TRecipe,
+	tag: number | null
+) => {
+	const tagIds = tag ? [tag] : [];
+	const { id, name, categoryId, source, description } = updatedRecipe;
 	return await fetch(urlRecipe + id, {
 		method: "PUT",
 		headers: {
 			Authorization: `Bearer ${getAccessToken()}`,
 			"Content-Type": "application/json",
 		},
-		body: JSON.stringify({ name, categoryId, tags, source, description }),
+		body: JSON.stringify({ name, categoryId, tagIds, source, description }),
 	});
 };

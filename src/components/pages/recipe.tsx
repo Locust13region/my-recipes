@@ -18,6 +18,7 @@ import {
 	clearSelectedTagValue,
 	getRecipesCategories,
 	receiveRecipeDescription,
+	receiveTags,
 	setEditMode,
 	setEditableRecipeDescription,
 	setRecipeFieldErrorText,
@@ -35,6 +36,7 @@ const Recipe: React.FC = () => {
 
 	useEffect(() => {
 		dispatch(getRecipesCategories());
+		dispatch(receiveTags());
 		dispatch(receiveRecipeDescription(String(id)));
 	}, [dispatch, id]);
 
@@ -68,14 +70,12 @@ const Recipe: React.FC = () => {
 			dispatch(setRecipeFieldErrorText("Необходимо название рецепта"));
 			return;
 		}
-		dispatch(setEditMode(false));
 		dispatch(updateRecipeDescription());
 	};
 	////////////////////////////////////////CLEAR ALL///////////////////////////////////
 	const clearFields = () => {
 		dispatch(clearSelectedTagValue(null));
-		dispatch(setEditableRecipeDescription({ source: "" }));
-		dispatch(setEditableRecipeDescription({ description: "" }));
+		dispatch(setEditableRecipeDescription({ source: "", description: "" }));
 	};
 
 	return (
@@ -112,6 +112,9 @@ const Recipe: React.FC = () => {
 			>
 				<CssBaseline />
 				<Box
+					component="form"
+					noValidate
+					autoComplete="off"
 					marginTop={2}
 					display={"flex"}
 					justifyContent={"center"}
@@ -184,6 +187,9 @@ const Recipe: React.FC = () => {
 					</ToggleButtonGroup>
 				</Box>
 				<Box
+					component="form"
+					noValidate
+					autoComplete="off"
 					marginTop={2}
 					paddingX={2}
 					display={"flex"}

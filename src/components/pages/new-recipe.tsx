@@ -98,7 +98,6 @@ const NewRecipe: React.FC = () => {
 		};
 		const newRecipeResult = dispatch(sendNewRecipe(newRecipe));
 		newRecipeResult.then(({ payload }) => {
-			console.log(payload);
 			clearAllFields();
 			navigate(`/${payload.categoryId}/${payload.id}`, {
 				replace: true,

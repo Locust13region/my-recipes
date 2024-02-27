@@ -9,7 +9,6 @@ import {
 	setSelectedTagValue,
 	setEditableRecipeDescription,
 	setRecipeFieldErrorText,
-	receiveTags,
 } from "../../store/recipes-slice";
 import { TTag } from "../../types/types";
 
@@ -24,11 +23,10 @@ const RecipeDescriptionEdit = () => {
 		(state) => state.recipesState?.currentRecipeDescription
 	);
 	const currentTagValue = useAppSelector(
-		(state) => state.recipesState.currentRecipeDescription?.tags[0]?.name
+		(state) => state.recipesState.currentRecipeDescription?.tags[0]
 	);
 	useEffect(() => {
-		dispatch(receiveTags());
-		dispatch(setSelectedTagValue(currentTagValue));
+		dispatch(setSelectedTagValue(currentTagValue || null));
 	}, [currentRecipeDescription, currentTagValue, dispatch]);
 	////////////////////////////////////////EDITABLE VALUES///////////////////////////////////
 	const editableName = useAppSelector(
