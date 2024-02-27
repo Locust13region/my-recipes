@@ -10,6 +10,7 @@ const urlNewRecipe = urlBase + "recipes";
 const urlTag = urlBase + "tags/";
 const urlRecipe = urlBase + "recipes/";
 const urlIngredients = urlBase + "ingredients?RecipeId=";
+const urlIngredient = urlBase + "ingredients/";
 const urlSteps = urlBase + "steps?RecipeId=";
 const urlGetFavorites = urlBase + "recipes?IsFavourite=true";
 const urlPostFavorites = urlBase + "favourites";
@@ -160,4 +161,23 @@ export const putUpdatedRecipeDescription = async (
 		},
 		body: JSON.stringify({ name, categoryId, tagIds, source, description }),
 	});
+};
+export const putRecipeIngredient = async (id: number, name: string) => {
+	return await fetch(urlIngredient + id, {
+		method: "PUT",
+		headers: {
+			Authorization: `Bearer ${getAccessToken()}`,
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({ name }),
+	});
+};
+export const deleteRecipeIngredients = async (id: number) => {
+	console.log("удаление ингредиента", id);
+	// return await fetch(urlIngredient + id, {
+	// 	method: "DELETE",
+	// 	headers: {
+	// 		Authorization: `Bearer ${getAccessToken()}`,
+	// 	},
+	// });
 };

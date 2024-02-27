@@ -213,7 +213,7 @@ const Recipe: React.FC = () => {
 						<button
 							className=""
 							onClick={() => {
-								clearFields();
+								// clearFields();
 							}}
 						>
 							<span className="flex text-amber-500 text-3xl material-symbols-outlined">

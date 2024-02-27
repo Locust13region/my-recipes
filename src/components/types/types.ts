@@ -19,7 +19,7 @@ export type TCategories = {
 };
 export type TIngredients = {
 	name: string;
-	description?: string;
+	// description?: string;
 };
 export type TStep = {
 	text: string;
@@ -63,7 +63,9 @@ export type TRecipesState = {
 	currentRecipeDescription: TRecipe | null;
 	editableRecipeDescription: TRecipe | null;
 	currentRecipeIngredients: TRecipeIngredients[];
+	editableRecipeIngredients: TRecipeIngredients[];
 	currentRecipeSteps: TRecipeSteps[];
+	editableRecipeSteps: TRecipeSteps[];
 	favoritesList: TRecipe[];
 	isEditMode: boolean;
 	recipeFieldErrorText: string;

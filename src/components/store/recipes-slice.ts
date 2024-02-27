@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
 	deleteFromFavorites,
 	deleteRecipe,
+	deleteRecipeIngredients,
 	getCategories,
 	getCategoryList,
 	getFavorites,
@@ -12,6 +13,7 @@ import {
 	postNewRecipe,
 	postNewTag,
 	postToFavorites,
+	putRecipeIngredient,
 	putUpdatedRecipeDescription,
 } from "../services/api-request";
 import type { TRecipesState, TNewRecipe } from "../types/types";
@@ -278,6 +280,49 @@ export const updateRecipeDescription = createAsyncThunk(
 		}
 	}
 );
+export const updateRecipeIngredient = createAsyncThunk(
+	"recipes/changeRecipeIngredient",
+	async (
+		updatedIngredient: { id: number; name: string },
+		{ rejectWithValue }
+	) => {
+		const { id, name } = updatedIngredient;
+		try {
+			const response = await putRecipeIngredient(id, name);
+			if (!response.ok) {
+				return rejectWithValue("Ингредиент не обновлен.");
+			}
+			return await response.json();
+		} catch (error) {
+			console.log(error);
+			if (error instanceof Error) {
+				return rejectWithValue(
+					"Ошибка соединения с сервером. Попробуйте позднее."
+				);
+			}
+		}
+	}
+);
+export const removeRecipeIngredient = createAsyncThunk(
+	"recipes/removeRecipeIngredient",
+	async (id: number, { rejectWithValue }) => {
+		console.log("удаление ингредиента", id);
+		// try {
+		// 	const response = await deleteRecipeIngredients(id);
+		// 	if (!response.ok) {
+		// 		return rejectWithValue("Ингредиент не удалён.");
+		// 	}
+		// 	return;
+		// } catch (error) {
+		// 	console.log(error);
+		// 	if (error instanceof Error) {
+		// 		return rejectWithValue(
+		// 			"Ошибка соединения с сервером. Попробуйте позднее."
+		// 		);
+		// 	}
+		// }
+	}
+);
 
 const initialState: TRecipesState = {
 	categories: [],
@@ -287,7 +332,9 @@ const initialState: TRecipesState = {
 	currentRecipeDescription: null,
 	editableRecipeDescription: null,
 	currentRecipeIngredients: [],
+	editableRecipeIngredients: [],
 	currentRecipeSteps: [],
+	editableRecipeSteps: [],
 	favoritesList: [],
 	isEditMode: false,
 	recipeFieldErrorText: "",
@@ -372,6 +419,19 @@ export const recipesSlice = createSlice({
 				state.currentRecipeDescription!.description =
 					action.payload.description;
 				//////////////////////////////ADD TAG UPDATE////////////////////////
+			})
+			.addCase(updateRecipeIngredient.fulfilled, (state, action) => {
+				state.currentRecipeIngredients = state.currentRecipeIngredients.map(
+					(item) => {
+						if (item.id === action.payload?.id) {
+							return { ...item, ...action.payload };
+						}
+						return item;
+					}
+				);
+				// })
+				// .addCase(removeRecipeIngredient.fulfilled, (state, action) => {
+				// 	console.log(action.meta);
 			});
 	},
 });

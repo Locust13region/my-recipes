@@ -1,9 +1,11 @@
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormGroup from "@mui/material/FormGroup";
+import amber from "@mui/material/colors/amber";
 import { useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "../../hook/typed-hooks";
 import { useParams } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../hook/typed-hooks";
 import { receiveRecipeIngredients } from "../../store/recipes-slice";
-import { Checkbox, FormControlLabel, FormGroup } from "@mui/material";
-import { amber } from "@mui/material/colors";
 
 const RecipeIngredientsInfo = () => {
 	const dispatch = useAppDispatch();
