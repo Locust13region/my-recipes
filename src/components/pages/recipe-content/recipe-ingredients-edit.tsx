@@ -36,9 +36,10 @@ const RecipeIngredientsEdit = () => {
 									fullWidth
 									variant="standard"
 									InputProps={{ disableUnderline: true }}
-									id={`ingr${id}`}
-									name={`ingr${id}`}
-									defaultValue={name}
+									id={`ingredient${id}`}
+									name={`ingredient${id}`}
+									defaultValue={name === "Новый ингредиент" ? "" : name}
+									placeholder="Новый ингредиент"
 									onFocus={(
 										event: React.FocusEvent<
 											HTMLInputElement | HTMLTextAreaElement
@@ -65,8 +66,7 @@ const RecipeIngredientsEdit = () => {
 								<button
 									className="w-full flex justify-center items-center"
 									onClick={() => {
-										console.log("удаление ингредиента", id);
-										// dispatch(removeRecipeIngredient(id));
+										dispatch(removeRecipeIngredient(id));
 									}}
 								>
 									<span className="text-amber-500 text-3xl material-symbols-outlined">

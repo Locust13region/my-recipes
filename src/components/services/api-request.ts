@@ -173,11 +173,20 @@ export const putRecipeIngredient = async (id: number, name: string) => {
 	});
 };
 export const deleteRecipeIngredients = async (id: number) => {
-	console.log("удаление ингредиента", id);
-	// return await fetch(urlIngredient + id, {
-	// 	method: "DELETE",
-	// 	headers: {
-	// 		Authorization: `Bearer ${getAccessToken()}`,
-	// 	},
-	// });
+	return await fetch(urlIngredient + id, {
+		method: "DELETE",
+		headers: {
+			Authorization: `Bearer ${getAccessToken()}`,
+		},
+	});
+};
+export const postNewRecipeIngredient = async (recipeId: string) => {
+	return await fetch(urlIngredient, {
+		method: "POST",
+		headers: {
+			Authorization: `Bearer ${getAccessToken()}`,
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({ recipeId, name: "Новый ингредиент" }),
+	});
 };

@@ -11,6 +11,7 @@ import {
 	getRecipeSteps,
 	getTags,
 	postNewRecipe,
+	postNewRecipeIngredient,
 	postNewTag,
 	postToFavorites,
 	putRecipeIngredient,
@@ -306,21 +307,39 @@ export const updateRecipeIngredient = createAsyncThunk(
 export const removeRecipeIngredient = createAsyncThunk(
 	"recipes/removeRecipeIngredient",
 	async (id: number, { rejectWithValue }) => {
-		console.log("удаление ингредиента", id);
-		// try {
-		// 	const response = await deleteRecipeIngredients(id);
-		// 	if (!response.ok) {
-		// 		return rejectWithValue("Ингредиент не удалён.");
-		// 	}
-		// 	return;
-		// } catch (error) {
-		// 	console.log(error);
-		// 	if (error instanceof Error) {
-		// 		return rejectWithValue(
-		// 			"Ошибка соединения с сервером. Попробуйте позднее."
-		// 		);
-		// 	}
-		// }
+		try {
+			const response = await deleteRecipeIngredients(id);
+			if (!response.ok) {
+				return rejectWithValue("Ингредиент не удалён.");
+			}
+			return;
+		} catch (error) {
+			console.log(error);
+			if (error instanceof Error) {
+				return rejectWithValue(
+					"Ошибка соединения с сервером. Попробуйте позднее."
+				);
+			}
+		}
+	}
+);
+export const addNewRecipeIngredient = createAsyncThunk(
+	"recipes/addNewRecipeIngredient",
+	async (recipeId: string, { rejectWithValue }) => {
+		try {
+			const response = await postNewRecipeIngredient(recipeId);
+			if (!response.ok) {
+				return rejectWithValue("Ингредиент не добавлен.");
+			}
+			return await response.json();
+		} catch (error) {
+			console.log(error);
+			if (error instanceof Error) {
+				return rejectWithValue(
+					"Ошибка соединения с сервером. Попробуйте позднее."
+				);
+			}
+		}
 	}
 );
 
@@ -332,9 +351,7 @@ const initialState: TRecipesState = {
 	currentRecipeDescription: null,
 	editableRecipeDescription: null,
 	currentRecipeIngredients: [],
-	editableRecipeIngredients: [],
 	currentRecipeSteps: [],
-	editableRecipeSteps: [],
 	favoritesList: [],
 	isEditMode: false,
 	recipeFieldErrorText: "",
@@ -429,9 +446,17 @@ export const recipesSlice = createSlice({
 						return item;
 					}
 				);
-				// })
-				// .addCase(removeRecipeIngredient.fulfilled, (state, action) => {
-				// 	console.log(action.meta);
+			})
+			.addCase(removeRecipeIngredient.fulfilled, (state, action) => {
+				console.log(action.meta.arg);
+				state.currentRecipeIngredients = state.currentRecipeIngredients.filter(
+					(item) => {
+						return item.id !== action.meta.arg;
+					}
+				);
+			})
+			.addCase(addNewRecipeIngredient.fulfilled, (state, action) => {
+				state.currentRecipeIngredients.push(action.payload);
 			});
 	},
 });

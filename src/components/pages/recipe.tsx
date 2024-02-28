@@ -15,12 +15,11 @@ import {
 	ToggleButtonGroup,
 } from "@mui/material";
 import {
-	clearSelectedTagValue,
+	addNewRecipeIngredient,
 	getRecipesCategories,
 	receiveRecipeDescription,
 	receiveTags,
 	setEditMode,
-	setEditableRecipeDescription,
 	setRecipeFieldErrorText,
 	setToFavorites,
 	updateRecipeDescription,
@@ -47,6 +46,7 @@ const Recipe: React.FC = () => {
 
 	//////////////////////////////////////HANDLE BUTTONS//////////////////////
 	const [alignment, setAlignment] = useState(pathname);
+
 	const handleChange = (
 		_: React.MouseEvent<HTMLElement>,
 		newAlignment: string
@@ -73,10 +73,6 @@ const Recipe: React.FC = () => {
 		dispatch(updateRecipeDescription());
 	};
 	////////////////////////////////////////CLEAR ALL///////////////////////////////////
-	const clearFields = () => {
-		dispatch(clearSelectedTagValue(null));
-		dispatch(setEditableRecipeDescription({ source: "", description: "" }));
-	};
 
 	return (
 		<div className="flex flex-col mx-auto max-w-md min-h-screen border">
@@ -112,9 +108,6 @@ const Recipe: React.FC = () => {
 			>
 				<CssBaseline />
 				<Box
-					component="form"
-					noValidate
-					autoComplete="off"
 					marginTop={2}
 					display={"flex"}
 					justifyContent={"center"}
@@ -187,9 +180,6 @@ const Recipe: React.FC = () => {
 					</ToggleButtonGroup>
 				</Box>
 				<Box
-					component="form"
-					noValidate
-					autoComplete="off"
 					marginTop={2}
 					paddingX={2}
 					display={"flex"}
@@ -200,28 +190,7 @@ const Recipe: React.FC = () => {
 				</Box>
 			</Container>
 			<footer className="header-footer-link bottom-0">
-				{isEditMode ? (
-					<>
-						<button
-							className="leading-3  text-xl"
-							onClick={() => {
-								handleRecipeUpdate();
-							}}
-						>
-							Сохранить
-						</button>
-						<button
-							className=""
-							onClick={() => {
-								// clearFields();
-							}}
-						>
-							<span className="flex text-amber-500 text-3xl material-symbols-outlined">
-								layers_clear
-							</span>
-						</button>
-					</>
-				) : (
+				{!isEditMode ? (
 					<>
 						{alignment.includes("ingredients") ? (
 							<Link
@@ -256,6 +225,83 @@ const Recipe: React.FC = () => {
 								border_color
 							</span>
 						</button>
+					</>
+				) : (
+					<>
+						{(() => {
+							switch (true) {
+								case alignment.includes("ingredients"):
+									return (
+										<>
+											<button
+												className="leading-3  text-xl"
+												onClick={() => {
+													dispatch(addNewRecipeIngredient(id!));
+												}}
+											>
+												Добавить
+											</button>
+											<button
+												className=""
+												onClick={() => {
+													dispatch(setEditMode(false));
+												}}
+											>
+												<span className="flex text-amber-500 text-3xl material-symbols-outlined">
+													edit_off
+												</span>
+											</button>
+										</>
+									);
+								case alignment.includes("steps"):
+									return (
+										<>
+											<button
+												className="leading-3  text-xl"
+												onClick={() => {
+													console.log("add step");
+												}}
+											>
+												Добавить
+											</button>
+											<button
+												className=""
+												onClick={() => {
+													dispatch(setEditMode(false));
+												}}
+											>
+												<span className="flex text-amber-500 text-3xl material-symbols-outlined">
+													edit_off
+												</span>
+											</button>
+										</>
+									);
+
+								default:
+									return (
+										<>
+											<button
+												className="leading-3  text-xl"
+												onClick={() => {
+													handleRecipeUpdate();
+												}}
+											>
+												Сохранить
+											</button>
+											{/* <button 
+												className=""
+												onClick={() => {
+													dispatch(setEditMode(false));
+												}}
+											>
+												<span className="flex text-amber-500 text-3xl material-symbols-outlined">
+													edit_off
+												</span>
+											</button> */}
+										</>
+									);
+							}
+						})()}
 					</>
 				)}
 			</footer>
