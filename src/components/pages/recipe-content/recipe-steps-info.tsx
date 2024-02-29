@@ -18,11 +18,11 @@ const RecipeStepsInfo = () => {
 	return (
 		<>
 			{!!steps.length &&
-				steps.map((step, index) => {
+				steps.map((step) => {
 					return (
 						<Typography
-							key={index}
-							marginTop={2}
+							key={step.id}
+							sx={{ mb: 2 }}
 						>
 							{step.text}
 						</Typography>

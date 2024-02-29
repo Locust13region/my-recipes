@@ -16,6 +16,7 @@ import {
 } from "@mui/material";
 import {
 	addNewRecipeIngredient,
+	addNewRecipeStep,
 	getRecipesCategories,
 	receiveRecipeDescription,
 	receiveTags,
@@ -259,7 +260,7 @@ const Recipe: React.FC = () => {
 											<button
 												className="leading-3  text-xl"
 												onClick={() => {
-													console.log("add step");
+													dispatch(addNewRecipeStep(id!));
 												}}
 											>
 												Добавить

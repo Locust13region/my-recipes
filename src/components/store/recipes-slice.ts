@@ -3,6 +3,7 @@ import {
 	deleteFromFavorites,
 	deleteRecipe,
 	deleteRecipeIngredients,
+	deleteRecipeSteps,
 	getCategories,
 	getCategoryList,
 	getFavorites,
@@ -12,9 +13,13 @@ import {
 	getTags,
 	postNewRecipe,
 	postNewRecipeIngredient,
+	postNewRecipeStep,
 	postNewTag,
 	postToFavorites,
 	putRecipeIngredient,
+	putRecipeStep,
+	putReorderedRecipeIngredients,
+	putReorderedRecipeSteps,
 	putUpdatedRecipeDescription,
 } from "../services/api-request";
 import type { TRecipesState, TNewRecipe } from "../types/types";
@@ -282,7 +287,7 @@ export const updateRecipeDescription = createAsyncThunk(
 	}
 );
 export const updateRecipeIngredient = createAsyncThunk(
-	"recipes/changeRecipeIngredient",
+	"recipes/updateRecipeIngredient",
 	async (
 		updatedIngredient: { id: number; name: string },
 		{ rejectWithValue }
@@ -292,6 +297,26 @@ export const updateRecipeIngredient = createAsyncThunk(
 			const response = await putRecipeIngredient(id, name);
 			if (!response.ok) {
 				return rejectWithValue("Ингредиент не обновлен.");
+			}
+			return await response.json();
+		} catch (error) {
+			console.log(error);
+			if (error instanceof Error) {
+				return rejectWithValue(
+					"Ошибка соединения с сервером. Попробуйте позднее."
+				);
+			}
+		}
+	}
+);
+export const updateRecipeStep = createAsyncThunk(
+	"recipes/updateRecipeStep",
+	async (updatedStep: { id: number; text: string }, { rejectWithValue }) => {
+		const { id, text } = updatedStep;
+		try {
+			const response = await putRecipeStep(id, text);
+			if (!response.ok) {
+				return rejectWithValue("Этап не обновлен.");
 			}
 			return await response.json();
 		} catch (error) {
@@ -323,6 +348,25 @@ export const removeRecipeIngredient = createAsyncThunk(
 		}
 	}
 );
+export const removeRecipeStep = createAsyncThunk(
+	"recipes/removeRecipeStep",
+	async (id: number, { rejectWithValue }) => {
+		try {
+			const response = await deleteRecipeSteps(id);
+			if (!response.ok) {
+				return rejectWithValue("Этап не удалён.");
+			}
+			return;
+		} catch (error) {
+			console.log(error);
+			if (error instanceof Error) {
+				return rejectWithValue(
+					"Ошибка соединения с сервером. Попробуйте позднее."
+				);
+			}
+		}
+	}
+);
 export const addNewRecipeIngredient = createAsyncThunk(
 	"recipes/addNewRecipeIngredient",
 	async (recipeId: string, { rejectWithValue }) => {
@@ -332,6 +376,69 @@ export const addNewRecipeIngredient = createAsyncThunk(
 				return rejectWithValue("Ингредиент не добавлен.");
 			}
 			return await response.json();
+		} catch (error) {
+			if (error instanceof Error) {
+				return rejectWithValue(
+					"Ошибка соединения с сервером. Попробуйте позднее."
+				);
+			}
+		}
+	}
+);
+export const addNewRecipeStep = createAsyncThunk(
+	"recipes/addNewRecipeStep",
+	async (recipeId: string, { rejectWithValue }) => {
+		try {
+			const response = await postNewRecipeStep(recipeId);
+			if (!response.ok) {
+				return rejectWithValue("Этап не добавлен.");
+			}
+			return await response.json();
+		} catch (error) {
+			if (error instanceof Error) {
+				return rejectWithValue(
+					"Ошибка соединения с сервером. Попробуйте позднее."
+				);
+			}
+		}
+	}
+);
+export const sendReorderedRecipeIngredients = createAsyncThunk(
+	"recipes/sendReorderedRecipeIngredients",
+	async (
+		reorderedIngredients: { recipeId: number; ids: number[] },
+		{ rejectWithValue }
+	) => {
+		const { recipeId, ids } = reorderedIngredients;
+		try {
+			const response = await putReorderedRecipeIngredients(recipeId, ids);
+			if (!response.ok) {
+				return rejectWithValue("Сортировка ингредиентов не сохранена.");
+			}
+			return;
+		} catch (error) {
+			console.log(error);
+			if (error instanceof Error) {
+				return rejectWithValue(
+					"Ошибка соединения с сервером. Попробуйте позднее."
+				);
+			}
+		}
+	}
+);
+export const sendReorderedRecipeSteps = createAsyncThunk(
+	"recipes/sendReorderedRecipeSteps",
+	async (
+		reorderedSteps: { recipeId: number; ids: number[] },
+		{ rejectWithValue }
+	) => {
+		const { recipeId, ids } = reorderedSteps;
+		try {
+			const response = await putReorderedRecipeSteps(recipeId, ids);
+			if (!response.ok) {
+				return rejectWithValue("Сортировка этапов не сохранена.");
+			}
+			return;
 		} catch (error) {
 			console.log(error);
 			if (error instanceof Error) {
@@ -378,6 +485,12 @@ export const recipesSlice = createSlice({
 		},
 		setRecipeFieldErrorText: (state, action) => {
 			state.recipeFieldErrorText = action.payload;
+		},
+		setCurrentRecipeIngredientsOrder: (state, action) => {
+			state.currentRecipeIngredients = action.payload;
+		},
+		setCurrentRecipeStepsOrder: (state, action) => {
+			state.currentRecipeSteps = action.payload;
 		},
 	},
 
@@ -447,16 +560,31 @@ export const recipesSlice = createSlice({
 					}
 				);
 			})
+			.addCase(updateRecipeStep.fulfilled, (state, action) => {
+				state.currentRecipeSteps = state.currentRecipeSteps.map((item) => {
+					if (item.id === action.payload?.id) {
+						return { ...item, ...action.payload };
+					}
+					return item;
+				});
+			})
 			.addCase(removeRecipeIngredient.fulfilled, (state, action) => {
-				console.log(action.meta.arg);
 				state.currentRecipeIngredients = state.currentRecipeIngredients.filter(
 					(item) => {
 						return item.id !== action.meta.arg;
 					}
 				);
 			})
+			.addCase(removeRecipeStep.fulfilled, (state, action) => {
+				state.currentRecipeSteps = state.currentRecipeSteps.filter((item) => {
+					return item.id !== action.meta.arg;
+				});
+			})
 			.addCase(addNewRecipeIngredient.fulfilled, (state, action) => {
 				state.currentRecipeIngredients.push(action.payload);
+			})
+			.addCase(addNewRecipeStep.fulfilled, (state, action) => {
+				state.currentRecipeSteps.push(action.payload);
 			});
 	},
 });
@@ -467,5 +595,7 @@ export const {
 	setEditMode,
 	setEditableRecipeDescription,
 	setRecipeFieldErrorText,
+	setCurrentRecipeIngredientsOrder,
+	setCurrentRecipeStepsOrder,
 } = recipesSlice.actions;
 export default recipesSlice.reducer;

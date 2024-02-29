@@ -12,6 +12,7 @@ const urlRecipe = urlBase + "recipes/";
 const urlIngredients = urlBase + "ingredients?RecipeId=";
 const urlIngredient = urlBase + "ingredients/";
 const urlSteps = urlBase + "steps?RecipeId=";
+const urlStep = urlBase + "steps/";
 const urlGetFavorites = urlBase + "recipes?IsFavourite=true";
 const urlPostFavorites = urlBase + "favourites";
 const urlDeleteFavorites = urlBase + "favourites/";
@@ -50,7 +51,7 @@ export const tokenRefresh = async (refreshToken: string) => {
 	});
 };
 export const getCategories = async () => {
-	return await fetch(urlCategories);
+	return await fetch(urlCategories, { mode: "cors" });
 };
 export const getPath = (suffix: string) => {
 	return urlBase + suffix;
@@ -58,6 +59,7 @@ export const getPath = (suffix: string) => {
 export const getCategoryList = async (categoryId: number) => {
 	return await fetch(urlCategoryList + categoryId, {
 		headers: {
+			mode: "cors",
 			Authorization: `Bearer ${getAccessToken()}`,
 		},
 	});
@@ -172,8 +174,26 @@ export const putRecipeIngredient = async (id: number, name: string) => {
 		body: JSON.stringify({ name }),
 	});
 };
+export const putRecipeStep = async (id: number, text: string) => {
+	return await fetch(urlStep + id, {
+		method: "PUT",
+		headers: {
+			Authorization: `Bearer ${getAccessToken()}`,
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({ text }),
+	});
+};
 export const deleteRecipeIngredients = async (id: number) => {
 	return await fetch(urlIngredient + id, {
+		method: "DELETE",
+		headers: {
+			Authorization: `Bearer ${getAccessToken()}`,
+		},
+	});
+};
+export const deleteRecipeSteps = async (id: number) => {
+	return await fetch(urlStep + id, {
 		method: "DELETE",
 		headers: {
 			Authorization: `Bearer ${getAccessToken()}`,
@@ -188,5 +208,41 @@ export const postNewRecipeIngredient = async (recipeId: string) => {
 			"Content-Type": "application/json",
 		},
 		body: JSON.stringify({ recipeId, name: "Новый ингредиент" }),
+	});
+};
+export const postNewRecipeStep = async (recipeId: string) => {
+	return await fetch(urlStep, {
+		method: "POST",
+		headers: {
+			Authorization: `Bearer ${getAccessToken()}`,
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({ recipeId, text: "Новый этап" }),
+	});
+};
+export const putReorderedRecipeIngredients = async (
+	recipeId: number,
+	ids: number[]
+) => {
+	return await fetch(urlIngredient + "order", {
+		method: "PUT",
+		headers: {
+			Authorization: `Bearer ${getAccessToken()}`,
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({ recipeId, ids }),
+	});
+};
+export const putReorderedRecipeSteps = async (
+	recipeId: number,
+	ids: number[]
+) => {
+	return await fetch(urlStep + "order", {
+		method: "PUT",
+		headers: {
+			Authorization: `Bearer ${getAccessToken()}`,
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({ recipeId, ids }),
 	});
 };

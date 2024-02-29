@@ -19,7 +19,7 @@ const WithAuth: React.FC<React.PropsWithChildren> = ({ children }) => {
 				const localUser = JSON.parse(isLocalUser) as TUserState["user"];
 				if (
 					new Date().getTime() - localUser.tokenTimestamp <
-					localUser.expiresIn * 1000
+					localUser.expiresIn * 1 ///////////////// mult * 1000 ////////////////////
 				) {
 					console.log("token not outdated");
 					dispatch(setCurrentUser(localUser));
@@ -27,7 +27,7 @@ const WithAuth: React.FC<React.PropsWithChildren> = ({ children }) => {
 					setAuthStatus(true);
 				} else {
 					console.log(
-						"///////////////////////////////////////////////////TOKEN MUST BE REFRESHED!!!!////////////////////////////"
+						"///////////////TOKEN MUST BE REFRESHED!!!!///////////////"
 					);
 					const isUpdateFulfill = await dispatch(tokenUpdate(localUser));
 					setUpdateStatus(false);
