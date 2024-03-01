@@ -65,6 +65,7 @@ export type TRecipesState = {
 	currentRecipeIngredients: TRecipeIngredients[];
 	currentRecipeSteps: TRecipeSteps[];
 	favoritesList: TRecipe[];
+	wishlist: TRecipeIngredients[];
 	isEditMode: boolean;
 	recipeFieldErrorText: string;
 };

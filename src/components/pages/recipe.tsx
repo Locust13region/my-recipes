@@ -20,6 +20,7 @@ import {
 	getRecipesCategories,
 	receiveRecipeDescription,
 	receiveTags,
+	sendToWishlist,
 	setEditMode,
 	setRecipeFieldErrorText,
 	setToFavorites,
@@ -44,7 +45,6 @@ const Recipe: React.FC = () => {
 		(state) => state.recipesState.currentRecipeDescription?.isFavourite
 	);
 	const isEditMode = useAppSelector((state) => state.recipesState.isEditMode);
-
 	//////////////////////////////////////HANDLE BUTTONS//////////////////////
 	const [alignment, setAlignment] = useState(pathname);
 
@@ -199,7 +199,7 @@ const Recipe: React.FC = () => {
 								state={{ pathname }}
 								className="leading-3  text-xl"
 								onClick={() => {
-									console.log("В список покупок");
+									dispatch(sendToWishlist());
 								}}
 							>
 								В список покупок
@@ -289,16 +289,6 @@ const Recipe: React.FC = () => {
 											>
 												Сохранить
 											</button>
-											{/* <button 
-												className=""
-												onClick={() => {
-													dispatch(setEditMode(false));
-												}}
-											>
-												<span className="flex text-amber-500 text-3xl material-symbols-outlined">
-													edit_off
-												</span>
-											</button> */}
 										</>
 									);
 							}

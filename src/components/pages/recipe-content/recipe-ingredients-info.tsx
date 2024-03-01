@@ -5,7 +5,12 @@ import amber from "@mui/material/colors/amber";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../hook/typed-hooks";
-import { receiveRecipeIngredients } from "../../store/recipes-slice";
+import {
+	displaceFromShoppingList,
+	placeToShoppingList,
+	receiveRecipeIngredients,
+} from "../../store/recipes-slice";
+import { TRecipeIngredients } from "../../types/types";
 
 const RecipeIngredientsInfo = () => {
 	const dispatch = useAppDispatch();
@@ -18,16 +23,27 @@ const RecipeIngredientsInfo = () => {
 	const ingredients = useAppSelector(
 		(state) => state.recipesState.currentRecipeIngredients
 	);
+	const handleChange = (
+		event: React.ChangeEvent<HTMLInputElement>,
+		ingredient: TRecipeIngredients
+	) => {
+		event.target.checked
+			? dispatch(placeToShoppingList(ingredient))
+			: dispatch(displaceFromShoppingList(ingredient));
+	};
 	return (
 		<FormGroup>
 			{!!ingredients &&
-				ingredients.map(({ name, order }, index) => {
+				ingredients.map((ingredient) => {
 					return (
 						<FormControlLabel
-							key={index}
+							key={ingredient.id}
 							control={
 								<Checkbox
-									name={`number${order}`}
+									name={`${ingredient.id}`}
+									onChange={(event) => {
+										handleChange(event, ingredient);
+									}}
 									sx={{
 										"& .MuiSvgIcon-root": { fontSize: 32 },
 										"&.Mui-checked": {
@@ -36,7 +52,7 @@ const RecipeIngredientsInfo = () => {
 									}}
 								/>
 							}
-							label={name}
+							label={ingredient.name}
 						/>
 					);
 				})}

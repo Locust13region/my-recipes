@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
 	deleteFromFavorites,
+	deleteFromWishlist,
 	deleteRecipe,
 	deleteRecipeIngredients,
 	deleteRecipeSteps,
@@ -11,11 +12,13 @@ import {
 	getRecipeIngredients,
 	getRecipeSteps,
 	getTags,
+	getWishlist,
 	postNewRecipe,
 	postNewRecipeIngredient,
 	postNewRecipeStep,
 	postNewTag,
 	postToFavorites,
+	postToWishlist,
 	putRecipeIngredient,
 	putRecipeStep,
 	putReorderedRecipeIngredients,
@@ -449,6 +452,95 @@ export const sendReorderedRecipeSteps = createAsyncThunk(
 		}
 	}
 );
+export const sendToWishlist = createAsyncThunk(
+	"recipes/sendToWishlist",
+	async (_, { getState, rejectWithValue }) => {
+		const { recipesState } = getState() as RootState;
+		const { wishlist } = recipesState;
+		const requests = wishlist.map((item) => postToWishlist(item.id));
+		try {
+			const responses = await Promise.all(requests);
+			responses.forEach((response: Response) => {
+				if (!response.ok) {
+					return rejectWithValue("Не удалось сохранить список покупок.");
+				}
+			});
+			return;
+		} catch (error) {
+			console.log(error);
+			if (error instanceof Error) {
+				return rejectWithValue(
+					"Ошибка соединения с сервером. Попробуйте позднее."
+				);
+			}
+		}
+	}
+);
+export const removeFromWishlist = createAsyncThunk(
+	"recipes/removeFromShoppingList",
+	async (ingredientId: number, { rejectWithValue }) => {
+		try {
+			const response = await deleteFromWishlist(ingredientId);
+			if (!response.ok) {
+				return rejectWithValue("Ингредиент не удалён.");
+			}
+			return;
+		} catch (error) {
+			console.log(error);
+			if (error instanceof Error) {
+				return rejectWithValue(
+					"Ошибка соединения с сервером. Попробуйте позднее."
+				);
+			}
+		}
+	}
+);
+export const receiveRecipeShoppingList = createAsyncThunk(
+	"recipes/receiveRecipeShoppingList",
+	async (_, { rejectWithValue }) => {
+		try {
+			const response = await getWishlist();
+			if (!response.ok) {
+				return rejectWithValue("Список не получен.");
+			}
+			return await response.json();
+		} catch (error) {
+			console.log(error);
+			if (error instanceof Error) {
+				return rejectWithValue(
+					"Ошибка соединения с сервером. Попробуйте позднее."
+				);
+			}
+		}
+	}
+);
+export const clearWishlist = createAsyncThunk(
+	"recipes/clearWishlist",
+	async (_, { getState, rejectWithValue }) => {
+		const { recipesState } = getState() as RootState;
+		const { wishlist } = recipesState;
+		const requests = Array.from(new Set(wishlist.map((i) => i.id))).map(
+			(item) => deleteFromWishlist(item)
+		);
+		try {
+			const responses = await Promise.all(requests);
+			responses.forEach((response: Response) => {
+				console.log(response.ok);
+				if (!response.ok) {
+					return rejectWithValue("Не удалось очистить список покупок.");
+				}
+			});
+			return;
+		} catch (error) {
+			console.log(error);
+			if (error instanceof Error) {
+				return rejectWithValue(
+					"Ошибка соединения с сервером. Попробуйте позднее."
+				);
+			}
+		}
+	}
+);
 
 const initialState: TRecipesState = {
 	categories: [],
@@ -460,6 +552,7 @@ const initialState: TRecipesState = {
 	currentRecipeIngredients: [],
 	currentRecipeSteps: [],
 	favoritesList: [],
+	wishlist: [],
 	isEditMode: false,
 	recipeFieldErrorText: "",
 };
@@ -492,6 +585,14 @@ export const recipesSlice = createSlice({
 		setCurrentRecipeStepsOrder: (state, action) => {
 			state.currentRecipeSteps = action.payload;
 		},
+		placeToShoppingList: (state, action) => {
+			state.wishlist.push(action.payload);
+		},
+		displaceFromShoppingList: (state, action) => {
+			state.wishlist = state.wishlist.filter(
+				(item) => item.id !== action.payload.id
+			);
+		},
 	},
 
 	extraReducers: (builder) => {
@@ -508,6 +609,7 @@ export const recipesSlice = createSlice({
 				state.tags = [];
 				state.currentRecipeIngredients = [];
 				state.currentRecipeSteps = [];
+				state.wishlist = [];
 			})
 			.addCase(sendNewTag.fulfilled, (state, action) => {
 				state.tags.push(action.payload);
@@ -522,12 +624,20 @@ export const recipesSlice = createSlice({
 			})
 			.addCase(receiveRecipeIngredients.fulfilled, (state, action) => {
 				state.currentRecipeIngredients = action.payload;
+				state.wishlist = [];
 			})
 			.addCase(receiveRecipeSteps.fulfilled, (state, action) => {
 				state.currentRecipeSteps = action.payload;
 			})
 			.addCase(getFavoritesList.fulfilled, (state, action) => {
 				state.favoritesList = action.payload;
+				state.currentRecipeDescription = null;
+				state.editableRecipeDescription = null;
+				state.selectedTagValue = null;
+				state.tags = [];
+				state.currentRecipeIngredients = [];
+				state.currentRecipeSteps = [];
+				state.wishlist = [];
 			})
 			.addCase(removeFromFavorites.fulfilled, (state, action) => {
 				state.favoritesList = state.favoritesList.filter(
@@ -585,6 +695,17 @@ export const recipesSlice = createSlice({
 			})
 			.addCase(addNewRecipeStep.fulfilled, (state, action) => {
 				state.currentRecipeSteps.push(action.payload);
+			})
+			.addCase(receiveRecipeShoppingList.fulfilled, (state, action) => {
+				state.wishlist = action.payload;
+			})
+			.addCase(clearWishlist.fulfilled, (state) => {
+				state.wishlist = [];
+			})
+			.addCase(removeFromWishlist.fulfilled, (state, action) => {
+				state.wishlist = state.wishlist.filter((item) => {
+					return item.id !== action.meta.arg;
+				});
 			});
 	},
 });
@@ -597,5 +718,7 @@ export const {
 	setRecipeFieldErrorText,
 	setCurrentRecipeIngredientsOrder,
 	setCurrentRecipeStepsOrder,
+	placeToShoppingList,
+	displaceFromShoppingList,
 } = recipesSlice.actions;
 export default recipesSlice.reducer;

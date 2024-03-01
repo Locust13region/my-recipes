@@ -26,9 +26,7 @@ const WithAuth: React.FC<React.PropsWithChildren> = ({ children }) => {
 					setUpdateStatus(false);
 					setAuthStatus(true);
 				} else {
-					console.log(
-						"///////////////TOKEN MUST BE REFRESHED!!!!///////////////"
-					);
+					console.log("///////////////TOKEN REFRESHED!!!!///////////////");
 					const isUpdateFulfill = await dispatch(tokenUpdate(localUser));
 					setUpdateStatus(false);
 					if (isUpdateFulfill.payload) {

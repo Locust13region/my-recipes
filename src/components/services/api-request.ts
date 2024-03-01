@@ -16,6 +16,7 @@ const urlStep = urlBase + "steps/";
 const urlGetFavorites = urlBase + "recipes?IsFavourite=true";
 const urlPostFavorites = urlBase + "favourites";
 const urlDeleteFavorites = urlBase + "favourites/";
+const urlWishlist = urlBase + "wishlist/";
 
 export enum UrlUser {
 	REGISTRATION = urlRegistration,
@@ -244,5 +245,31 @@ export const putReorderedRecipeSteps = async (
 			"Content-Type": "application/json",
 		},
 		body: JSON.stringify({ recipeId, ids }),
+	});
+};
+export const getWishlist = async () => {
+	return await fetch(urlWishlist, {
+		headers: {
+			Authorization: `Bearer ${getAccessToken()}`,
+		},
+	});
+};
+export const postToWishlist = async (ingredientId: number) => {
+	return await fetch(urlWishlist, {
+		method: "POST",
+		headers: {
+			Authorization: `Bearer ${getAccessToken()}`,
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({ ingredientId }),
+	});
+};
+export const deleteFromWishlist = async (id: number) => {
+	return await fetch(urlWishlist + id, {
+		method: "DELETE",
+		headers: {
+			Authorization: `Bearer ${getAccessToken()}`,
+			"Content-Type": "application/json",
+		},
 	});
 };
