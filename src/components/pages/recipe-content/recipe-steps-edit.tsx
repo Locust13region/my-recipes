@@ -21,7 +21,7 @@ const RecipeStepsEdit = () => {
 		(state) => state.recipesState.currentRecipeSteps
 	);
 
-	const debouncedDispatch = pDebounce(dispatch, 500);
+	const debouncedDispatch = pDebounce(dispatch, 400);
 	const setOrder = (reorderedSteps: TRecipeSteps[]) => {
 		dispatch(setCurrentRecipeStepsOrder(reorderedSteps));
 		(debouncedDispatch as typeof dispatch)(

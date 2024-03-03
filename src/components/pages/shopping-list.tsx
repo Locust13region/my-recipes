@@ -4,6 +4,7 @@ import amber from "@mui/material/colors/amber";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../hook/typed-hooks";
 import {
+	clearWishlist,
 	receiveRecipeShoppingList,
 	removeFromWishlist,
 } from "../store/recipes-slice";
@@ -110,7 +111,8 @@ const ShoppingList: React.FC = () => {
 				<Dialog
 					show={showDialog}
 					setShow={setShowDialog}
-					dialogMessage="Весь список покупок будет удален!"
+					dialogMessage="Список покупок будет очищен!"
+					dialogAction={clearWishlist}
 				/>
 				<Link to={"/favorites"}>
 					<span className="flex text-amber-500 text-3xl material-symbols-outlined">

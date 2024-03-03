@@ -2,15 +2,22 @@ import { useRef } from "react";
 import { createPortal } from "react-dom";
 import { useClickAway } from "react-use";
 import { useAppDispatch } from "../hook/typed-hooks";
-import { clearWishlist } from "../store/recipes-slice";
+import { AsyncThunk } from "@reduxjs/toolkit";
+import { RootState } from "../store/store";
 
 type TDialogProps = {
 	show: boolean;
 	setShow: (arg: boolean) => void;
 	dialogMessage: string;
+	dialogAction: AsyncThunk<undefined, void, { state: RootState }>;
 };
 
-const Dialog: React.FC<TDialogProps> = ({ show, setShow, dialogMessage }) => {
+const Dialog: React.FC<TDialogProps> = ({
+	show,
+	setShow,
+	dialogMessage,
+	dialogAction,
+}) => {
 	const dispatch = useAppDispatch();
 
 	const ref = useRef(null);
@@ -50,7 +57,7 @@ const Dialog: React.FC<TDialogProps> = ({ show, setShow, dialogMessage }) => {
 							<button
 								className="mb-7 p-3 w-28 text-xl border border-gray-300 rounded-full px-4 py-1 leading-7"
 								onClick={() => {
-									dispatch(clearWishlist());
+									dispatch(dialogAction());
 									setShow(false);
 								}}
 							>
