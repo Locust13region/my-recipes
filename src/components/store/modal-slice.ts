@@ -20,7 +20,6 @@ export const modalSlice = createSlice({
 	initialState,
 	reducers: {
 		setMessageOn: (state, action: PayloadAction<string | undefined>) => {
-			console.log(action.payload);
 			state.isMessageOn = true;
 			state.messageContent = action.payload;
 		},

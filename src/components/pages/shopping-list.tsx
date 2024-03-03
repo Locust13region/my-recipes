@@ -1,10 +1,9 @@
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import amber from "@mui/material/colors/amber";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../hook/typed-hooks";
 import {
-	clearWishlist,
 	receiveRecipeShoppingList,
 	removeFromWishlist,
 } from "../store/recipes-slice";
@@ -14,8 +13,10 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import Container from "@mui/material/Container";
 import CssBaseline from "@mui/material/CssBaseline";
 import { TRecipeIngredients } from "../types/types";
+import Dialog from "../modal/dialog";
 
 const ShoppingList: React.FC = () => {
+	const [showDialog, setShowDialog] = useState(false);
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 
@@ -50,7 +51,7 @@ const ShoppingList: React.FC = () => {
 						wishlist.map((ingredient: TRecipeIngredients, index: number) => {
 							return (
 								<Swiper
-									key={`${index} - ${ingredient}`}
+									key={`${index} - ${ingredient.id}`}
 									className="w-full h-12 overflow-hidden flex justify-between items-center"
 									creativeEffect={{
 										prev: {
@@ -101,13 +102,16 @@ const ShoppingList: React.FC = () => {
 				<button
 					className="leading-3  text-xl"
 					onClick={() => {
-						if (confirm("Внимание! Удаляем весь список!")) {
-							dispatch(clearWishlist());
-						}
+						setShowDialog(true);
 					}}
 				>
 					Очистить
 				</button>
+				<Dialog
+					show={showDialog}
+					setShow={setShowDialog}
+					dialogMessage="Весь список покупок будет удален!"
+				/>
 				<Link to={"/favorites"}>
 					<span className="flex text-amber-500 text-3xl material-symbols-outlined">
 						favorite

@@ -267,9 +267,7 @@ export const updateRecipeDescription = createAsyncThunk(
 	async (_, { getState, rejectWithValue }) => {
 		const { recipesState } = getState() as RootState;
 		const { selectedTagValue } = recipesState;
-		const selectedTag = selectedTagValue?.id
-			? selectedTagValue.id
-			: recipesState.editableRecipeDescription?.tags[0].id;
+		const selectedTag = selectedTagValue?.id ? selectedTagValue.id : null;
 		try {
 			const response = await putUpdatedRecipeDescription(
 				recipesState.editableRecipeDescription!,
@@ -655,6 +653,9 @@ export const recipesSlice = createSlice({
 			.addCase(updateRecipeDescription.fulfilled, (state, action) => {
 				state.currentRecipeDescription!.name = action.payload.name;
 				state.currentRecipeDescription!.categoryId = action.payload.categoryId;
+				state.currentRecipeDescription!.tags = state.selectedTagValue
+					? [state.selectedTagValue]
+					: [];
 				state.currentRecipeDescription!.source = action.payload.source;
 				state.currentRecipeDescription!.description =
 					action.payload.description;
