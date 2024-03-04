@@ -1,24 +1,15 @@
 import { useEffect, useState } from "react";
-import {
-	CssBaseline,
-	Button,
-	TextField,
-	Typography,
-	Container,
-	Box,
-} from "@mui/material";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Container from "@mui/material/Container";
+import CssBaseline from "@mui/material/CssBaseline";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../hook/typed-hooks";
 import MessageModal from "../modal/message";
-import { login, setCurrentUser } from "../store/user-slice";
 import { setMessageOn } from "../store/modal-slice";
-
-const recipeTheme = createTheme({
-	typography: {
-		fontSize: 16,
-	},
-});
+import { login, setCurrentUser } from "../store/user-slice";
 
 const SignIn: React.FC = () => {
 	const dispatch = useAppDispatch();
@@ -76,7 +67,7 @@ const SignIn: React.FC = () => {
 	};
 
 	return (
-		<ThemeProvider theme={recipeTheme}>
+		<>
 			<Container
 				component="main"
 				maxWidth="xs"
@@ -163,7 +154,7 @@ const SignIn: React.FC = () => {
 				</Box>
 			</Container>
 			<MessageModal />
-		</ThemeProvider>
+		</>
 	);
 };
 

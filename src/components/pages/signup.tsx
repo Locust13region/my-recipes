@@ -1,23 +1,14 @@
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Container from "@mui/material/Container";
+import CssBaseline from "@mui/material/CssBaseline";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 import React, { useState } from "react";
-import {
-	CssBaseline,
-	Button,
-	TextField,
-	Typography,
-	Container,
-	Box,
-} from "@mui/material";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../hook/typed-hooks";
 import MessageModal from "../modal/message";
 import { registration } from "../store/user-slice";
-
-const recipeTheme = createTheme({
-	typography: {
-		fontSize: 16,
-	},
-});
 
 const SignUp: React.FC = () => {
 	const [email, setEmail] = useState("");
@@ -88,7 +79,7 @@ const SignUp: React.FC = () => {
 	};
 
 	return (
-		<ThemeProvider theme={recipeTheme}>
+		<>
 			<Container
 				component="main"
 				maxWidth="xs"
@@ -188,7 +179,7 @@ const SignUp: React.FC = () => {
 				</Box>
 			</Container>
 			<MessageModal />
-		</ThemeProvider>
+		</>
 	);
 };
 

@@ -88,21 +88,21 @@ const RecipesList: React.FC = () => {
 									</button>
 								</SwiperSlide>
 								<SwiperSlide className=" flex flex-row justify-between items-center">
-									<button
-										className="w-full flex justify-center items-center"
-										onClick={() => {
-											console.log(owner.email);
-											if (currentUserName === owner.email) {
-												console.log("delete");
-												dispatch(removeRecipe(String(id)));
-											} else {
-												dispatch(
-													setMessageOn("Удалить рецепт может только владелец.")
-												);
-											}
-										}}
-									>
-										<span className="text-amber-500 text-3xl material-symbols-outlined">
+									<button className="w-full flex justify-center items-center">
+										<span
+											onClick={() => {
+												if (currentUserName === owner.email) {
+													dispatch(removeRecipe(String(id)));
+												} else {
+													dispatch(
+														setMessageOn(
+															"Удалить рецепт может только владелец."
+														)
+													);
+												}
+											}}
+											className="text-amber-500 text-3xl material-symbols-outlined"
+										>
 											delete
 										</span>
 									</button>

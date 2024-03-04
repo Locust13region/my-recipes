@@ -79,13 +79,13 @@ const Favorites: React.FC = () => {
 									</div>
 								</SwiperSlide>
 								<SwiperSlide className=" flex flex-row justify-between items-center">
-									<button
-										className="w-full flex justify-center items-center"
-										onClick={() => {
-											dispatch(removeFromFavorites(String(id)));
-										}}
-									>
-										<span className="text-amber-500 text-3xl material-symbols-outlined">
+									<button className="w-full flex justify-center items-center">
+										<span
+											onClick={() => {
+												dispatch(removeFromFavorites(String(id)));
+											}}
+											className="text-amber-500 text-3xl material-symbols-outlined"
+										>
 											heart_minus
 										</span>
 									</button>

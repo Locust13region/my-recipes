@@ -22,6 +22,16 @@ import Spinner from "./components/pages/spinner.tsx";
 import { store } from "./components/store/store.ts";
 
 import "./index.css";
+import { createTheme, ThemeProvider } from "@mui/material";
+import { amber } from "@mui/material/colors";
+
+const theme = createTheme({
+	palette: {
+		primary: {
+			main: "#ffa000",
+		},
+	},
+});
 const router = createBrowserRouter(
 	[
 		{
@@ -105,11 +115,13 @@ const router = createBrowserRouter(
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
 	<React.StrictMode>
-		<Provider store={store}>
-			<RouterProvider
-				router={router}
-				fallbackElement={<Spinner />}
-			/>
-		</Provider>
+		<ThemeProvider theme={theme}>
+			<Provider store={store}>
+				<RouterProvider
+					router={router}
+					fallbackElement={<Spinner />}
+				/>
+			</Provider>
+		</ThemeProvider>
 	</React.StrictMode>
 );
