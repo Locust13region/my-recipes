@@ -27,6 +27,7 @@ import {
 	updateRecipeDescription,
 } from "../store/recipes-slice";
 import MessageModal from "../modal/message";
+import { setMessageOn } from "../store/modal-slice";
 
 const Recipe: React.FC = () => {
 	const { id, categoryId } = useParams();
@@ -45,6 +46,12 @@ const Recipe: React.FC = () => {
 		(state) => state.recipesState.currentRecipeDescription?.isFavourite
 	);
 	const isEditMode = useAppSelector((state) => state.recipesState.isEditMode);
+	const currentRecipeDescription = useAppSelector(
+		(state) => state.recipesState.currentRecipeDescription
+	);
+	const currentUserName = useAppSelector(
+		(state) => state.userState.user.username
+	);
 	//////////////////////////////////////HANDLE BUTTONS//////////////////////
 	const [alignment, setAlignment] = useState(pathname);
 
@@ -91,15 +98,10 @@ const Recipe: React.FC = () => {
 				</button>
 				<div className="overflow-hidden flex flex-col justify-center items-start">
 					<h2 className="leading-5 text-xl overflow-hidden whitespace-nowrap">
-						{useAppSelector(
-							(state) => state.recipesState.currentRecipeDescription?.name
-						)}
+						{currentRecipeDescription?.name}
 					</h2>
 					<p className="leading-none text-sm overflow-hidden whitespace-nowrap text-gray-400">
-						{useAppSelector(
-							(state) =>
-								state.recipesState.currentRecipeDescription?.tags[0]?.name
-						)}
+						{currentRecipeDescription?.tags[0]?.name}
 					</p>
 				</div>
 			</header>
@@ -218,8 +220,14 @@ const Recipe: React.FC = () => {
 						<button
 							className=""
 							onClick={() => {
-								dispatch(setEditMode(true));
-								dispatch(setRecipeFieldErrorText(""));
+								if (currentUserName === currentRecipeDescription?.owner.email) {
+									dispatch(setEditMode(true));
+									dispatch(setRecipeFieldErrorText(""));
+								} else {
+									dispatch(
+										setMessageOn("Редактировать рецепт может только владелец.")
+									);
+								}
 							}}
 						>
 							<span className="flex text-amber-500 text-3xl material-symbols-outlined">

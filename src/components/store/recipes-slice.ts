@@ -267,9 +267,7 @@ export const updateRecipeDescription = createAsyncThunk(
 	async (_, { getState, rejectWithValue }) => {
 		const { recipesState } = getState() as RootState;
 		const { selectedTagValue } = recipesState;
-		const selectedTag = selectedTagValue?.id
-			? selectedTagValue.id
-			: recipesState.editableRecipeDescription?.tags[0].id;
+		const selectedTag = selectedTagValue?.id ? selectedTagValue.id : null;
 		try {
 			const response = await putUpdatedRecipeDescription(
 				recipesState.editableRecipeDescription!,
@@ -525,9 +523,36 @@ export const clearWishlist = createAsyncThunk(
 		try {
 			const responses = await Promise.all(requests);
 			responses.forEach((response: Response) => {
-				console.log(response.ok);
 				if (!response.ok) {
 					return rejectWithValue("Не удалось очистить список покупок.");
+				}
+			});
+			return;
+		} catch (error) {
+			console.log(error);
+			if (error instanceof Error) {
+				return rejectWithValue(
+					"Ошибка соединения с сервером. Попробуйте позднее."
+				);
+			}
+		}
+	}
+);
+export const clearFavoritesList = createAsyncThunk(
+	"recipes/clearFavoritesList",
+	async (_, { getState, rejectWithValue }) => {
+		const { recipesState } = getState() as RootState;
+		const { favoritesList } = recipesState;
+		const requests = favoritesList.map((i) =>
+			deleteFromFavorites(String(i.id))
+		);
+		try {
+			const responses = await Promise.all(requests);
+			responses.forEach((response: Response) => {
+				if (!response.ok) {
+					return rejectWithValue(
+						"Не удалось очистить список избранных рецептов."
+					);
 				}
 			});
 			return;
@@ -655,6 +680,9 @@ export const recipesSlice = createSlice({
 			.addCase(updateRecipeDescription.fulfilled, (state, action) => {
 				state.currentRecipeDescription!.name = action.payload.name;
 				state.currentRecipeDescription!.categoryId = action.payload.categoryId;
+				state.currentRecipeDescription!.tags = state.selectedTagValue
+					? [state.selectedTagValue]
+					: [];
 				state.currentRecipeDescription!.source = action.payload.source;
 				state.currentRecipeDescription!.description =
 					action.payload.description;
@@ -701,6 +729,9 @@ export const recipesSlice = createSlice({
 			})
 			.addCase(clearWishlist.fulfilled, (state) => {
 				state.wishlist = [];
+			})
+			.addCase(clearFavoritesList.fulfilled, (state) => {
+				state.favoritesList = [];
 			})
 			.addCase(removeFromWishlist.fulfilled, (state, action) => {
 				state.wishlist = state.wishlist.filter((item) => {

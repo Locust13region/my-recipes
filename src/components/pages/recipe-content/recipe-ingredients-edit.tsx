@@ -19,7 +19,7 @@ const RecipeIngredientsEdit = () => {
 		(state) => state.recipesState.currentRecipeIngredients
 	);
 
-	const debouncedDispatch = pDebounce(dispatch, 500);
+	const debouncedDispatch = pDebounce(dispatch, 400);
 	const setOrder = (reorderedIngredients: TRecipeIngredients[]) => {
 		dispatch(setCurrentRecipeIngredientsOrder(reorderedIngredients));
 		(debouncedDispatch as typeof dispatch)(

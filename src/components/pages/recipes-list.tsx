@@ -9,6 +9,7 @@ import {
 import MessageModal from "../modal/message";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
+import { setMessageOn } from "../store/modal-slice";
 
 const RecipesList: React.FC = () => {
 	const { id } = useParams();
@@ -23,6 +24,9 @@ const RecipesList: React.FC = () => {
 	const categories = useAppSelector((state) => state.recipesState.categories);
 	const categoryList = useAppSelector(
 		(state) => state.recipesState.categoryList
+	);
+	const currentUserName = useAppSelector(
+		(state) => state.userState.user.username
 	);
 
 	return (
@@ -87,7 +91,15 @@ const RecipesList: React.FC = () => {
 									<button
 										className="w-full flex justify-center items-center"
 										onClick={() => {
-											dispatch(removeRecipe(String(id)));
+											console.log(owner.email);
+											if (currentUserName === owner.email) {
+												console.log("delete");
+												dispatch(removeRecipe(String(id)));
+											} else {
+												dispatch(
+													setMessageOn("Удалить рецепт может только владелец.")
+												);
+											}
 										}}
 									>
 										<span className="text-amber-500 text-3xl material-symbols-outlined">

@@ -1,7 +1,7 @@
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import amber from "@mui/material/colors/amber";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../hook/typed-hooks";
 import {
 	clearWishlist,
@@ -13,9 +13,11 @@ import MessageModal from "../modal/message";
 import { Swiper, SwiperSlide } from "swiper/react";
 import Container from "@mui/material/Container";
 import CssBaseline from "@mui/material/CssBaseline";
-import { TRecipeIngredients } from "../types/types";
+import { TLocalWishlist, TRecipeIngredients } from "../types/types";
+import Dialog from "../modal/dialog";
 
 const ShoppingList: React.FC = () => {
+	const [showDialog, setShowDialog] = useState(false);
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 
@@ -23,7 +25,38 @@ const ShoppingList: React.FC = () => {
 		dispatch(receiveRecipeShoppingList());
 	}, [dispatch]);
 
-	const wishlist = useAppSelector((state) => state.recipesState.wishlist);
+	// const wishlist = useAppSelector((state) => state.recipesState.wishlist);
+	// console.log("wishlist", wishlist);
+	// const localStorageWishlist = localStorage.getItem("_recipeWishlist");
+	// let isMatchToWishlist;
+	// let local;
+	// if (localStorageWishlist) {
+	// 	local = JSON.parse(localStorageWishlist);
+	// 	console.log(local);
+	// 	isMatchToWishlist = wishlist.every((item, index) => {
+	// 		item.id === local[index].id;
+	// 	});
+	// 	console.log(isMatchToWishlist);
+	// } else {
+	// 	isMatchToWishlist = false;
+	// 	console.log(isMatchToWishlist);
+	// }
+
+	// const [localWishlist, setLocalWishlist] = useState<TLocalWishlist[]>([]);
+	// if (!wishlist.length) {
+	// 	setLocalWishlist([]);
+	// 	localStorage.setItem("_recipeWishlist", JSON.stringify([]));
+	// } else {
+	// 	if (localStorageWishlist && isMatchToWishlist) {
+	// 		setLocalWishlist(local);
+	// 	} else {
+	// 		const wishlistEnhanced = wishlist.map((item) => {
+	// 			return { ...item, checked: false };
+	// 		});
+	// 		setLocalWishlist(wishlistEnhanced);
+	// 		localStorage.setItem("_recipeWishlist", JSON.stringify(wishlistEnhanced));
+	// 	}
+	// }
 
 	return (
 		<div className="flex flex-col mx-auto max-w-md min-h-screen border">
@@ -48,9 +81,11 @@ const ShoppingList: React.FC = () => {
 				<ul className="mt-2 mb-4 px-7  flex flex-wrap justify-between">
 					{!!wishlist &&
 						wishlist.map((ingredient: TRecipeIngredients, index: number) => {
+					// {localWishlist.map(
+						(ingredient: TRecipeIngredients, index: number) => {
 							return (
 								<Swiper
-									key={`${index} - ${ingredient}`}
+									key={`${index} - ${ingredient.id}`}
 									className="w-full h-12 overflow-hidden flex justify-between items-center"
 									creativeEffect={{
 										prev: {
@@ -94,20 +129,25 @@ const ShoppingList: React.FC = () => {
 									</SwiperSlide>
 								</Swiper>
 							);
-						})}
+						}
+					)}
 				</ul>
 			</Container>
 			<footer className="header-footer-link bottom-0 ">
 				<button
 					className="leading-3  text-xl"
 					onClick={() => {
-						if (confirm("Внимание! Удаляем весь список!")) {
-							dispatch(clearWishlist());
-						}
+						setShowDialog(true);
 					}}
 				>
 					Очистить
 				</button>
+				<Dialog
+					show={showDialog}
+					setShow={setShowDialog}
+					dialogMessage="Список покупок будет очищен!"
+					dialogAction={clearWishlist}
+				/>
 				<Link to={"/favorites"}>
 					<span className="flex text-amber-500 text-3xl material-symbols-outlined">
 						favorite

@@ -100,7 +100,7 @@ const EditRecipe: React.FC = () => {
 			steps: recipeSteps,
 			ingredients: recipeIngredients,
 		};
-		const newRecipeResult = dispatch(sendNewRecipe({ accessToken, newRecipe }));
+		const newRecipeResult = dispatch(sendNewRecipe(newRecipe));
 		newRecipeResult.then((result) => {
 			clearAllFields();
 			console.log(result);
@@ -109,7 +109,7 @@ const EditRecipe: React.FC = () => {
 	};
 	////////////////////////////////////////CLEAR ALL///////////////////////////////////
 	const clearAllFields = () => {
-		dispatch(clearSelectedTagValue());
+		dispatch(clearSelectedTagValue(null));
 		setRecipeName("");
 		setRecipeUrl("");
 		setRecipeDescription("");
@@ -194,13 +194,11 @@ const EditRecipe: React.FC = () => {
 						onChange={(_event, newValue) => {
 							if (typeof newValue === "string") {
 								console.log("add as string", newValue);
-								dispatch(sendNewTag({ accessToken, name: newValue }));
+								dispatch(sendNewTag(newValue));
 								console.log(tags);
 							} else if (newValue && newValue.inputValue) {
 								console.log("add as object", newValue);
-								dispatch(
-									sendNewTag({ accessToken, name: newValue.inputValue })
-								);
+								dispatch(sendNewTag(newValue.inputValue));
 							} else {
 								dispatch(setSelectedTagValue(newValue));
 							}

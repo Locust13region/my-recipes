@@ -71,7 +71,7 @@ const SignIn: React.FC = () => {
 		dispatch(setCurrentUser(loginResult.payload));
 		localStorage.setItem("_recipes", JSON.stringify(loginResult.payload));
 		if (loginResult.meta.requestStatus === "fulfilled") {
-			navigate(fromLocation, { replace: false });
+			navigate(fromLocation, { replace: true });
 		}
 	};
 

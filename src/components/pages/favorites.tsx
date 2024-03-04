@@ -1,12 +1,18 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../hook/typed-hooks";
-import { getFavoritesList, removeFromFavorites } from "../store/recipes-slice";
+import {
+	clearFavoritesList,
+	getFavoritesList,
+	removeFromFavorites,
+} from "../store/recipes-slice";
 import MessageModal from "../modal/message";
 import { TRecipe } from "../types/types";
 import { Swiper, SwiperSlide } from "swiper/react";
+import Dialog from "../modal/dialog";
 
 const Favorites: React.FC = () => {
+	const [showDialog, setShowDialog] = useState(false);
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 
@@ -93,11 +99,17 @@ const Favorites: React.FC = () => {
 				<button
 					className="leading-3  text-xl"
 					onClick={() => {
-						console.log("очищаем всё!");
+						setShowDialog(true);
 					}}
 				>
 					Очистить
 				</button>
+				<Dialog
+					show={showDialog}
+					setShow={setShowDialog}
+					dialogMessage="Список избранных рецептов будет очищен!"
+					dialogAction={clearFavoritesList}
+				/>
 				<Link to={"/shopping"}>
 					<span className="flex text-amber-500 text-3xl material-symbols-outlined">
 						shopping_cart
