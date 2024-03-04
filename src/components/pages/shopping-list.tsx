@@ -1,24 +1,18 @@
-import Checkbox from "@mui/material/Checkbox";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import amber from "@mui/material/colors/amber";
+import { Typography } from "@mui/material";
+import Container from "@mui/material/Container";
+import CssBaseline from "@mui/material/CssBaseline";
 import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Swiper, SwiperSlide } from "swiper/react";
 import { useAppDispatch, useAppSelector } from "../hook/typed-hooks";
+import Dialog from "../modal/dialog";
+import MessageModal from "../modal/message";
 import {
 	clearWishlist,
 	receiveRecipeShoppingList,
 	removeFromWishlist,
 } from "../store/recipes-slice";
-import { Link, useNavigate } from "react-router-dom";
-import MessageModal from "../modal/message";
-import { Swiper, SwiperSlide } from "swiper/react";
-import Container from "@mui/material/Container";
-import CssBaseline from "@mui/material/CssBaseline";
-<<<<<<< HEAD
-import { TLocalWishlist, TRecipeIngredients } from "../types/types";
-=======
 import { TRecipeIngredients } from "../types/types";
->>>>>>> 45bc89c982683a01a88a694b3fe954493a729d80
-import Dialog from "../modal/dialog";
 
 const ShoppingList: React.FC = () => {
 	const [showDialog, setShowDialog] = useState(false);
@@ -29,38 +23,7 @@ const ShoppingList: React.FC = () => {
 		dispatch(receiveRecipeShoppingList());
 	}, [dispatch]);
 
-	// const wishlist = useAppSelector((state) => state.recipesState.wishlist);
-	// console.log("wishlist", wishlist);
-	// const localStorageWishlist = localStorage.getItem("_recipeWishlist");
-	// let isMatchToWishlist;
-	// let local;
-	// if (localStorageWishlist) {
-	// 	local = JSON.parse(localStorageWishlist);
-	// 	console.log(local);
-	// 	isMatchToWishlist = wishlist.every((item, index) => {
-	// 		item.id === local[index].id;
-	// 	});
-	// 	console.log(isMatchToWishlist);
-	// } else {
-	// 	isMatchToWishlist = false;
-	// 	console.log(isMatchToWishlist);
-	// }
-
-	// const [localWishlist, setLocalWishlist] = useState<TLocalWishlist[]>([]);
-	// if (!wishlist.length) {
-	// 	setLocalWishlist([]);
-	// 	localStorage.setItem("_recipeWishlist", JSON.stringify([]));
-	// } else {
-	// 	if (localStorageWishlist && isMatchToWishlist) {
-	// 		setLocalWishlist(local);
-	// 	} else {
-	// 		const wishlistEnhanced = wishlist.map((item) => {
-	// 			return { ...item, checked: false };
-	// 		});
-	// 		setLocalWishlist(wishlistEnhanced);
-	// 		localStorage.setItem("_recipeWishlist", JSON.stringify(wishlistEnhanced));
-	// 	}
-	// }
+	const wishlist = useAppSelector((state) => state.recipesState.wishlist);
 
 	return (
 		<div className="flex flex-col mx-auto max-w-md min-h-screen border">
@@ -85,8 +48,6 @@ const ShoppingList: React.FC = () => {
 				<ul className="mt-2 mb-4 px-7  flex flex-wrap justify-between">
 					{!!wishlist &&
 						wishlist.map((ingredient: TRecipeIngredients, index: number) => {
-					// {localWishlist.map(
-						(ingredient: TRecipeIngredients, index: number) => {
 							return (
 								<Swiper
 									key={`${index} - ${ingredient.id}`}
@@ -101,23 +62,8 @@ const ShoppingList: React.FC = () => {
 										},
 									}}
 								>
-									<SwiperSlide>
-										<FormControlLabel
-											control={
-												<Checkbox
-													name={`${ingredient.id}`}
-													onChange={() => {}}
-													sx={{
-														"& .MuiSvgIcon-root": { fontSize: 32 },
-														"&.Mui-checked": {
-															color: amber[700],
-														},
-													}}
-												/>
-											}
-											label={ingredient.name}
-											sx={{ flexGrow: 1, overflow: "hidden" }}
-										/>
+									<SwiperSlide className="w-full flex items-center grow overflow-hidden">
+										<Typography>{ingredient.name}</Typography>
 									</SwiperSlide>
 									<SwiperSlide className=" flex flex-row justify-between items-center">
 										<button className="w-full flex justify-center items-center">
@@ -133,15 +79,14 @@ const ShoppingList: React.FC = () => {
 									</SwiperSlide>
 								</Swiper>
 							);
-						}
-					)}
+						})}
 				</ul>
 			</Container>
 			<footer className="header-footer-link bottom-0 ">
 				<button
 					className="leading-3  text-xl"
 					onClick={() => {
-						setShowDialog(true);
+						!!wishlist.length && setShowDialog(true);
 					}}
 				>
 					Очистить

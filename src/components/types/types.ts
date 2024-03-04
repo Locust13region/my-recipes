@@ -80,10 +80,3 @@ export type TRecipeSteps = {
 	text: string;
 	order: number;
 };
-export type TLocalWishlist = {
-	id: number;
-	name: string;
-	order: number;
-	recipeId: number;
-	checked: boolean;
-};

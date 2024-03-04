@@ -99,7 +99,7 @@ const Favorites: React.FC = () => {
 				<button
 					className="leading-3  text-xl"
 					onClick={() => {
-						setShowDialog(true);
+						!!favoritesList.length && setShowDialog(true);
 					}}
 				>
 					Очистить
