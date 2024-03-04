@@ -13,7 +13,11 @@ import MessageModal from "../modal/message";
 import { Swiper, SwiperSlide } from "swiper/react";
 import Container from "@mui/material/Container";
 import CssBaseline from "@mui/material/CssBaseline";
+<<<<<<< HEAD
 import { TLocalWishlist, TRecipeIngredients } from "../types/types";
+=======
+import { TRecipeIngredients } from "../types/types";
+>>>>>>> 45bc89c982683a01a88a694b3fe954493a729d80
 import Dialog from "../modal/dialog";
 
 const ShoppingList: React.FC = () => {
