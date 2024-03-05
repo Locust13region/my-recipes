@@ -49,9 +49,16 @@ export const getRecipesCategories = createAsyncThunk(
 );
 export const getRecipesList = createAsyncThunk(
 	"recipes/getRecipesList",
-	async (categoryId: number, { rejectWithValue }) => {
+	async (categoryId: number, { getState, rejectWithValue }) => {
+		const { recipesState } = getState() as RootState;
+		const { filterSearch, filterTagIds, filterUsers } = recipesState;
 		try {
-			const response = await getCategoryList(categoryId);
+			const response = await getCategoryList(
+				categoryId,
+				filterSearch,
+				filterTagIds,
+				filterUsers
+			);
 			if (!response.ok) {
 				return rejectWithValue("Список не получен.");
 			}
@@ -580,8 +587,10 @@ const initialState: TRecipesState = {
 	wishlist: [],
 	isEditMode: false,
 	recipeFieldErrorText: "",
+	filterSearch: "",
+	filterTagIds: "",
+	filterUsers: "",
 };
-
 export const recipesSlice = createSlice({
 	name: "recipes",
 	initialState,

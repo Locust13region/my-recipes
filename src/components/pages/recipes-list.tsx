@@ -1,5 +1,5 @@
 import { Link, useParams } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../hook/typed-hooks";
 import {
 	getRecipesCategories,
@@ -10,8 +10,11 @@ import MessageModal from "../modal/message";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import { setMessageOn } from "../store/modal-slice";
+import UsersSelect from "../modal/users-select";
+import { receiveUsersList } from "../store/user-slice";
 
 const RecipesList: React.FC = () => {
+	const [showUserSelect, setShowUserSelect] = useState(false);
 	const { id } = useParams();
 	const categoryId = Number(id);
 	const dispatch = useAppDispatch();
@@ -19,6 +22,7 @@ const RecipesList: React.FC = () => {
 	useEffect(() => {
 		dispatch(getRecipesCategories());
 		dispatch(getRecipesList(categoryId));
+		dispatch(receiveUsersList());
 	}, [categoryId, dispatch]);
 
 	const categories = useAppSelector((state) => state.recipesState.categories);
@@ -123,13 +127,17 @@ const RecipesList: React.FC = () => {
 				<button
 					className=""
 					onClick={() => {
-						console.log("фильтр рецептов по пользователям");
+						setShowUserSelect(true);
 					}}
 				>
 					<span className="flex text-amber-500 text-3xl material-symbols-outlined">
 						person
 					</span>
 				</button>
+				<UsersSelect
+					show={showUserSelect}
+					setShow={setShowUserSelect}
+				/>
 			</footer>
 			<MessageModal />
 		</div>

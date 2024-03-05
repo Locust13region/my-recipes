@@ -11,6 +11,10 @@ export type TUserState = {
 		tokenTimestamp: number;
 		refreshToken: string;
 	};
+	users: {
+		id: string;
+		email: string;
+	}[];
 };
 export type TCategories = {
 	id: number;
@@ -68,6 +72,9 @@ export type TRecipesState = {
 	wishlist: TRecipeIngredients[];
 	isEditMode: boolean;
 	recipeFieldErrorText: string;
+	filterSearch: string;
+	filterTagIds: string;
+	filterUsers: string;
 };
 export type TRecipeIngredients = {
 	id: number;

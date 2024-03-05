@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { TCredentials, TUserState } from "../types/types";
-import { UrlUser, tokenRefresh } from "../services/api-request";
+import { UrlUser, getUsersList, tokenRefresh } from "../services/api-request";
 import { userRequest } from "../services/api-request";
 
 export const registration = createAsyncThunk(
@@ -39,7 +39,6 @@ export const registration = createAsyncThunk(
 		}
 	}
 );
-
 export const login = createAsyncThunk(
 	"user/login",
 	async (credentials: TCredentials, { rejectWithValue }) => {
@@ -64,7 +63,6 @@ export const login = createAsyncThunk(
 		}
 	}
 );
-
 export const tokenUpdate = createAsyncThunk(
 	"user/tokenUpdate",
 	async (localUser: TUserState["user"], { dispatch }) => {
@@ -86,7 +84,25 @@ export const tokenUpdate = createAsyncThunk(
 		}
 	}
 );
-
+export const receiveUsersList = createAsyncThunk(
+	"recipes/receiveUsersList",
+	async (_, { rejectWithValue }) => {
+		try {
+			const response = await getUsersList();
+			if (!response.ok) {
+				return rejectWithValue("Список не получен.");
+			}
+			return await response.json();
+		} catch (error) {
+			console.log(error);
+			if (error instanceof Error) {
+				return rejectWithValue(
+					"Ошибка соединения с сервером. Попробуйте позднее."
+				);
+			}
+		}
+	}
+);
 const initialState: TUserState = {
 	user: {
 		username: "",
@@ -96,6 +112,7 @@ const initialState: TUserState = {
 		tokenTimestamp: 0,
 		refreshToken: "",
 	},
+	users: [],
 };
 
 export const userSlice = createSlice({
@@ -124,16 +141,20 @@ export const userSlice = createSlice({
 		},
 	},
 	extraReducers: (builder) => {
-		builder.addCase(login.rejected, (state) => {
-			state.user = {
-				username: "",
-				tokenType: "",
-				accessToken: "",
-				expiresIn: 0,
-				tokenTimestamp: 0,
-				refreshToken: "",
-			};
-		});
+		builder
+			.addCase(login.rejected, (state) => {
+				state.user = {
+					username: "",
+					tokenType: "",
+					accessToken: "",
+					expiresIn: 0,
+					tokenTimestamp: 0,
+					refreshToken: "",
+				};
+			})
+			.addCase(receiveUsersList.fulfilled, (state, action) => {
+				state.users = action.payload;
+			});
 	},
 });
 

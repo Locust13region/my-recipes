@@ -6,9 +6,10 @@ const urlLogin = urlBase + "login";
 const urlRefreshToken = urlBase + "refresh";
 const urlCategories = urlBase + "categories";
 const urlCategoryList = urlBase + "recipes?categoryId=";
+const urlUsers = urlBase + "users";
 const urlNewRecipe = urlBase + "recipes";
-const urlTag = urlBase + "tags/";
 const urlRecipe = urlBase + "recipes/";
+const urlTag = urlBase + "tags/";
 const urlIngredients = urlBase + "ingredients?RecipeId=";
 const urlIngredient = urlBase + "ingredients/";
 const urlSteps = urlBase + "steps?RecipeId=";
@@ -22,7 +23,6 @@ export enum UrlUser {
 	REGISTRATION = urlRegistration,
 	LOGIN = urlLogin,
 }
-
 function getAccessToken() {
 	const userLocalStorage = localStorage.getItem("_recipes");
 	if (userLocalStorage) {
@@ -32,7 +32,6 @@ function getAccessToken() {
 		return null;
 	}
 }
-
 export const userRequest = async (credentials: TCredentials, url: UrlUser) => {
 	return await fetch(url, {
 		method: "POST",
@@ -57,10 +56,36 @@ export const getCategories = async () => {
 export const getPath = (suffix: string) => {
 	return urlBase + suffix;
 };
-export const getCategoryList = async (categoryId: number) => {
-	return await fetch(urlCategoryList + categoryId, {
+export const getCategoryList = async (
+	categoryId: number,
+	filterSearch: string,
+	filterTagIds: string,
+	filterUsers: string
+) => {
+	console.log(
+		urlCategoryList +
+			categoryId +
+			(filterSearch ? `&Search=${filterSearch}` : "") +
+			(filterTagIds ? `&TagIds=${filterTagIds}` : "") +
+			(filterUsers ? `&UserIds=${filterUsers}` : "")
+	);
+	return await fetch(
+		urlCategoryList +
+			categoryId +
+			(filterSearch ? `&Search=${filterSearch}` : "") +
+			(filterTagIds ? `&TagIds=${filterTagIds}` : "") +
+			(filterUsers ? `&UserIds=${filterUsers}` : ""),
+		{
+			headers: {
+				mode: "cors",
+				Authorization: `Bearer ${getAccessToken()}`,
+			},
+		}
+	);
+};
+export const getUsersList = async () => {
+	return await fetch(urlUsers, {
 		headers: {
-			mode: "cors",
 			Authorization: `Bearer ${getAccessToken()}`,
 		},
 	});
