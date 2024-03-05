@@ -7,21 +7,48 @@ import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Divider from "@mui/material/Divider";
 import Stack from "@mui/material/Stack";
+import type { TFilterUsers } from "../types/types";
+import {
+	displaceFromFilterUsers,
+	getRecipesList,
+	placeToFilterUsers,
+} from "../store/recipes-slice";
 
 type TUsersSelectProps = {
 	show: boolean;
 	setShow: (arg: boolean) => void;
+	categoryId: number;
 };
 
-const UsersSelect: React.FC<TUsersSelectProps> = ({ show, setShow }) => {
-	const currentUser = useAppSelector((state) => state.userState.user.username);
-	const users = useAppSelector((state) => state.userState.users);
+const UsersSelect: React.FC<TUsersSelectProps> = ({
+	show,
+	setShow,
+	categoryId,
+}) => {
 	const dispatch = useAppDispatch();
+
+	const users = useAppSelector((state) => state.userState.users);
+	const currentUserName = useAppSelector(
+		(state) => state.userState.user.username
+	);
+	const currentUser = users.find((user) => user.email === currentUserName)!;
+	const selectedUsers = useAppSelector(
+		(state) => state.recipesState.filterUsers
+	);
 
 	const ref = useRef(null);
 	useClickAway(ref, () => {
 		setShow(false);
 	});
+
+	const handleChange = (
+		event: React.ChangeEvent<HTMLInputElement>,
+		user: TFilterUsers
+	) => {
+		event.target.checked
+			? dispatch(placeToFilterUsers(user))
+			: dispatch(displaceFromFilterUsers(user));
+	};
 
 	if (!show) {
 		return null;
@@ -54,8 +81,17 @@ const UsersSelect: React.FC<TUsersSelectProps> = ({ show, setShow }) => {
 								</h5>
 								<p className="mt-2 text-sm">Вы:</p>
 								<FormControlLabel
-									control={<Checkbox />}
-									label={currentUser}
+									control={
+										<Checkbox
+											onChange={(event) => {
+												handleChange(event, currentUser);
+											}}
+										/>
+									}
+									checked={selectedUsers.some(
+										(SelectedUser) => SelectedUser.id === currentUser.id
+									)}
+									label={currentUser.email}
 									className="overflow-x-hidden"
 								/>
 								<Divider />
@@ -66,19 +102,23 @@ const UsersSelect: React.FC<TUsersSelectProps> = ({ show, setShow }) => {
 									{!!users &&
 										users
 											.filter(
-												(user: { id: string; email: string }) =>
-													user.email !== currentUser
+												(user: TFilterUsers) => user.email !== currentUserName
 											)
-											.map((user: { id: string; email: string }) => {
+											.map((user) => {
 												return (
 													<FormControlLabel
 														key={user.id}
 														control={
 															<Checkbox
 																name={`${user.id}`}
-																onChange={() => {}}
+																onChange={(event) => {
+																	handleChange(event, user);
+																}}
 															/>
 														}
+														checked={selectedUsers.some(
+															(SelectedUser) => SelectedUser.id === user.id
+														)}
 														label={user.email}
 														className="overflow-x-hidden"
 													/>
@@ -89,8 +129,8 @@ const UsersSelect: React.FC<TUsersSelectProps> = ({ show, setShow }) => {
 									<button
 										className="w-28 h-10 mt-4 mb-7 text-xl  border border-gray-300 rounded-full px-4 py-1 leading-7"
 										onClick={() => {
-											console.log("отправить список в стор");
 											setShow(false);
+											dispatch(getRecipesList(categoryId));
 										}}
 									>
 										ОК

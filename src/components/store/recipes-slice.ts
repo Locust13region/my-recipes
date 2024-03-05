@@ -52,12 +52,14 @@ export const getRecipesList = createAsyncThunk(
 	async (categoryId: number, { getState, rejectWithValue }) => {
 		const { recipesState } = getState() as RootState;
 		const { filterSearch, filterTagIds, filterUsers } = recipesState;
+		const filterUsersRequest = filterUsers.map((user) => user.id).join(",");
+
 		try {
 			const response = await getCategoryList(
 				categoryId,
 				filterSearch,
 				filterTagIds,
-				filterUsers
+				filterUsersRequest
 			);
 			if (!response.ok) {
 				return rejectWithValue("Список не получен.");
@@ -589,7 +591,7 @@ const initialState: TRecipesState = {
 	recipeFieldErrorText: "",
 	filterSearch: "",
 	filterTagIds: "",
-	filterUsers: "",
+	filterUsers: [],
 };
 export const recipesSlice = createSlice({
 	name: "recipes",
@@ -624,6 +626,14 @@ export const recipesSlice = createSlice({
 		},
 		displaceFromShoppingList: (state, action) => {
 			state.wishlist = state.wishlist.filter(
+				(item) => item.id !== action.payload.id
+			);
+		},
+		placeToFilterUsers: (state, action) => {
+			state.filterUsers.push(action.payload);
+		},
+		displaceFromFilterUsers: (state, action) => {
+			state.filterUsers = state.filterUsers.filter(
 				(item) => item.id !== action.payload.id
 			);
 		},
@@ -760,5 +770,7 @@ export const {
 	setCurrentRecipeStepsOrder,
 	placeToShoppingList,
 	displaceFromShoppingList,
+	placeToFilterUsers,
+	displaceFromFilterUsers,
 } = recipesSlice.actions;
 export default recipesSlice.reducer;

@@ -137,6 +137,7 @@ const RecipesList: React.FC = () => {
 				<UsersSelect
 					show={showUserSelect}
 					setShow={setShowUserSelect}
+					categoryId={categoryId}
 				/>
 			</footer>
 			<MessageModal />

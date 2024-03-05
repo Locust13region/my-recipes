@@ -74,7 +74,7 @@ export type TRecipesState = {
 	recipeFieldErrorText: string;
 	filterSearch: string;
 	filterTagIds: string;
-	filterUsers: string;
+	filterUsers: TFilterUsers[];
 };
 export type TRecipeIngredients = {
 	id: number;
@@ -86,4 +86,8 @@ export type TRecipeSteps = {
 	id: number;
 	text: string;
 	order: number;
+};
+export type TFilterUsers = {
+	id: string;
+	email: string;
 };
