@@ -72,7 +72,7 @@ export type TRecipesState = {
 	wishlist: TRecipeIngredients[];
 	isEditMode: boolean;
 	recipeFieldErrorText: string;
-	filterSearch: string;
+	filterSearch: TRecipe[];
 	filterTagIds: string;
 	filterUsers: TFilterUsers[];
 };

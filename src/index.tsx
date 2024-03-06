@@ -23,7 +23,6 @@ import { store } from "./components/store/store.ts";
 
 import "./index.css";
 import { createTheme, ThemeProvider } from "@mui/material";
-import { amber } from "@mui/material/colors";
 
 const theme = createTheme({
 	palette: {

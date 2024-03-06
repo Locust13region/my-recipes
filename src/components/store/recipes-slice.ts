@@ -51,13 +51,12 @@ export const getRecipesList = createAsyncThunk(
 	"recipes/getRecipesList",
 	async (categoryId: number, { getState, rejectWithValue }) => {
 		const { recipesState } = getState() as RootState;
-		const { filterSearch, filterTagIds, filterUsers } = recipesState;
+		const { filterTagIds, filterUsers } = recipesState;
 		const filterUsersRequest = filterUsers.map((user) => user.id).join(",");
 
 		try {
 			const response = await getCategoryList(
 				categoryId,
-				filterSearch,
 				filterTagIds,
 				filterUsersRequest
 			);
@@ -137,7 +136,7 @@ export const sendNewRecipe = createAsyncThunk(
 );
 export const receiveRecipeDescription = createAsyncThunk(
 	"recipes/receiveRecipeDescription",
-	async (recipeId: string, { rejectWithValue }) => {
+	async (recipeId: string | null, { rejectWithValue }) => {
 		try {
 			const response = await getRecipeDescription(recipeId);
 			if (!response.ok) {
@@ -589,8 +588,8 @@ const initialState: TRecipesState = {
 	wishlist: [],
 	isEditMode: false,
 	recipeFieldErrorText: "",
-	filterSearch: "",
-	filterTagIds: "",
+	filterSearch: [],
+	filterTagIds: "", // не используется
 	filterUsers: [],
 };
 export const recipesSlice = createSlice({
@@ -637,6 +636,9 @@ export const recipesSlice = createSlice({
 				(item) => item.id !== action.payload.id
 			);
 		},
+		clearFilterSearch: (state, action) => {
+			state.filterSearch = action.payload;
+		},
 	},
 
 	extraReducers: (builder) => {
@@ -663,8 +665,12 @@ export const recipesSlice = createSlice({
 				state.tags = action.payload;
 			})
 			.addCase(receiveRecipeDescription.fulfilled, (state, action) => {
-				state.currentRecipeDescription = action.payload;
-				state.editableRecipeDescription = action.payload;
+				if (Array.isArray(action.payload)) {
+					state.filterSearch = action.payload;
+				} else {
+					state.currentRecipeDescription = action.payload;
+					state.editableRecipeDescription = action.payload;
+				}
 			})
 			.addCase(receiveRecipeIngredients.fulfilled, (state, action) => {
 				state.currentRecipeIngredients = action.payload;
@@ -772,5 +778,6 @@ export const {
 	displaceFromShoppingList,
 	placeToFilterUsers,
 	displaceFromFilterUsers,
+	clearFilterSearch,
 } = recipesSlice.actions;
 export default recipesSlice.reducer;

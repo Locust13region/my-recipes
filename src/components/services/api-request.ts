@@ -58,21 +58,18 @@ export const getPath = (suffix: string) => {
 };
 export const getCategoryList = async (
 	categoryId: number,
-	filterSearch: string,
 	filterTagIds: string,
 	filterUsers: string
 ) => {
 	console.log(
 		urlCategoryList +
 			categoryId +
-			(filterSearch ? `&Search=${filterSearch}` : "") +
 			(filterTagIds ? `&TagIds=${filterTagIds}` : "") +
 			(filterUsers ? `&UserIds=${filterUsers}` : "")
 	);
 	return await fetch(
 		urlCategoryList +
 			categoryId +
-			(filterSearch ? `&Search=${filterSearch}` : "") +
 			(filterTagIds ? `&TagIds=${filterTagIds}` : "") +
 			(filterUsers ? `&UserIds=${filterUsers}` : ""),
 		{
@@ -121,8 +118,8 @@ export const postNewRecipe = async (
 		body: JSON.stringify({ ...newRecipe, tagIds: tagsArray }),
 	});
 };
-export const getRecipeDescription = async (recipeId: string) => {
-	return await fetch(urlRecipe + recipeId, {
+export const getRecipeDescription = async (recipeId: string | null) => {
+	return await fetch(urlRecipe + (recipeId ? recipeId : ""), {
 		headers: {
 			Authorization: `Bearer ${getAccessToken()}`,
 		},

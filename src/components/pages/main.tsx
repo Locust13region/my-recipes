@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { getPath } from "../services/api-request";
-import Profile from "../modal/profile";
-import { useAppDispatch, useAppSelector } from "../hook/typed-hooks";
-import { getRecipesCategories } from "../store/recipes-slice";
-import MessageModal from "../modal/message";
 import { Link } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../hook/typed-hooks";
+import MessageModal from "../modal/message";
+import Profile from "../modal/profile";
+import { getPath } from "../services/api-request";
+import { getRecipesCategories } from "../store/recipes-slice";
+import SearchRecipe from "../search/search";
 
 const Main: React.FC = () => {
 	const [showProfile, setShowProfile] = useState(false);
@@ -28,15 +29,10 @@ const Main: React.FC = () => {
 					</span>
 				</Link>
 				<div className="flex grow gap-2 justify-between border border-gray-300 rounded-full px-4 py-1 leading-7">
-					<input
-						name="search"
-						className=" grow outline-none bg-white"
-						type="text"
-						placeholder="Найти рецепт"
-					/>
-					<button className=" text-gray-400 material-symbols-outlined">
+					<SearchRecipe />
+					{/* <button className=" text-gray-400 material-symbols-outlined">
 						search
-					</button>
+					</button> */}
 				</div>
 			</header>
 			<main className="bg-link grow relative overflow-y-scroll">
