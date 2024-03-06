@@ -35,7 +35,7 @@ const SearchRecipe: React.FC = () => {
 	}, [dispatch, open]);
 
 	const handleOptionSelected = (
-		event: React.SyntheticEvent<Element, Event>,
+		_: React.SyntheticEvent<Element, Event>,
 		value: TRecipe | null,
 		reason: AutocompleteChangeReason
 	) => {
