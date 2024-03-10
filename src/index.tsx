@@ -109,7 +109,7 @@ const router = createBrowserRouter(
 			),
 		},
 	],
-	{ basename: "/my-recipes" }
+	// { basename: "/my-recipes" }
 );
 
 ReactDOM.createRoot(document.getElementById("root")!).render(

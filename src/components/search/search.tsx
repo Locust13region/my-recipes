@@ -3,7 +3,7 @@ import Autocomplete, {
 } from "@mui/material/Autocomplete";
 import CircularProgress from "@mui/material/CircularProgress";
 import TextField from "@mui/material/TextField";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../hook/typed-hooks";
 import {
@@ -19,27 +19,11 @@ const SearchRecipe: React.FC = () => {
 	const allRecipes = useAppSelector((state) => state.recipesState.filterSearch);
 	const loading = open && allRecipes.length === 0;
 
-	useEffect(() => {
-		if (!loading) {
-			return undefined;
-		}
-		(async () => {
-			await dispatch(receiveRecipeDescription(null));
-		})();
-	}, [dispatch, loading]);
-
-	useEffect(() => {
-		if (!open) {
-			dispatch(clearFilterSearch([]));
-		}
-	}, [dispatch, open]);
-
 	const handleOptionSelected = (
 		_: React.SyntheticEvent<Element, Event>,
 		value: TRecipe | null,
 		reason: AutocompleteChangeReason
 	) => {
-		console.log("reason", reason);
 		if (value && reason === "selectOption") {
 			console.log("value", value);
 			navigate(`/${value.categoryId}/${value.id}`);
@@ -54,9 +38,11 @@ const SearchRecipe: React.FC = () => {
 			noOptionsText={"Совпадений нет."}
 			open={open}
 			onOpen={() => {
+				dispatch(receiveRecipeDescription(null));
 				setOpen(true);
 			}}
 			onClose={() => {
+				dispatch(clearFilterSearch([]));
 				setOpen(false);
 			}}
 			onChange={handleOptionSelected}
