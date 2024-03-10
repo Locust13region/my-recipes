@@ -24,6 +24,7 @@ import { store } from "./components/store/store.ts";
 import { createTheme, ThemeProvider } from "@mui/material";
 import MainMui from "./components/pages/main-mui.tsx";
 import "./index.css";
+import FullScreenMeta from "./components/full-screen-meta/full-screen-meta.tsx";
 
 const theme = createTheme({
 	palette: {
@@ -117,6 +118,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
 	<React.StrictMode>
 		<ThemeProvider theme={theme}>
 			<Provider store={store}>
+				<FullScreenMeta />
 				<RouterProvider
 					router={router}
 					fallbackElement={<Spinner />}

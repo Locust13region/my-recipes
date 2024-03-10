@@ -26,7 +26,7 @@ const ShoppingList: React.FC = () => {
 	const wishlist = useAppSelector((state) => state.recipesState.wishlist);
 
 	return (
-		<div className="flex flex-col mx-auto max-w-md min-h-screen border">
+		<div className="flex flex-col mx-auto max-w-md min-h-dvh border">
 			<header className="header-footer-link top-0">
 				<button
 					className="flex"

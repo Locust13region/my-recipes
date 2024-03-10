@@ -18,7 +18,7 @@ const Main: React.FC = () => {
 	const categories = useAppSelector((state) => state.recipesState.categories);
 
 	return (
-		<div className="flex flex-col mx-auto max-w-md min-h-screen border">
+		<div className="flex flex-col mx-auto max-w-md min-h-dhv border">
 			<header className="header-footer-link top-0">
 				<Link
 					to={"favorites"}
