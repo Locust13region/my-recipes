@@ -44,12 +44,12 @@ const RecipeIngredientsInfo = () => {
 									onChange={(event) => {
 										handleChange(event, ingredient);
 									}}
-									sx={{
-										"& .MuiSvgIcon-root": { fontSize: 32 },
-										"&.Mui-checked": {
-											color: amber[700],
-										},
-									}}
+									// sx={{
+									// 	"& .MuiSvgIcon-root": { fontSize: 32 },
+									// 	"&.Mui-checked": {
+									// 		color: amber[700],
+									// 	},
+									// }}
 								/>
 							}
 							label={ingredient.name}

@@ -21,8 +21,9 @@ import SignUp from "./components/pages/signup.tsx";
 import Spinner from "./components/pages/spinner.tsx";
 import { store } from "./components/store/store.ts";
 
-import "./index.css";
 import { createTheme, ThemeProvider } from "@mui/material";
+import MainMui from "./components/pages/main-mui.tsx";
+import "./index.css";
 
 const theme = createTheme({
 	palette: {
@@ -108,7 +109,7 @@ const router = createBrowserRouter(
 				/>
 			),
 		},
-	],
+	]
 	// { basename: "/my-recipes" }
 );
 

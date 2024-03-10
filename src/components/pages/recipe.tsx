@@ -196,16 +196,17 @@ const Recipe: React.FC = () => {
 				{!isEditMode ? (
 					<>
 						{alignment.includes("ingredients") ? (
-							<Link
-								to={"/shopping"}
-								state={{ pathname }}
+							<button
+								// to={"/shopping"}
+								// state={{ pathname }}
 								className="leading-3  text-xl"
-								onClick={() => {
-									dispatch(sendToWishlist());
+								onClick={async () => {
+									await dispatch(sendToWishlist());
+									navigate("/shopping", { state: { pathname } });
 								}}
 							>
 								В список покупок
-							</Link>
+							</button>
 						) : (
 							<button
 								className="leading-3  text-xl"
