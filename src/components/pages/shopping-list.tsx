@@ -68,9 +68,9 @@ const ShoppingList: React.FC = () => {
 									<SwiperSlide className=" flex flex-row justify-between items-center">
 										<button className="w-full flex justify-center items-center">
 											<span
-												onClick={() => {
-													dispatch(removeFromWishlist(ingredient.id));
-												}}
+												onClick={() =>
+													dispatch(removeFromWishlist(ingredient.id))
+												}
 												className="text-amber-500 text-3xl material-symbols-outlined"
 											>
 												delete

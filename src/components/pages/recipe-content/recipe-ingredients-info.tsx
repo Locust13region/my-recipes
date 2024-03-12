@@ -1,7 +1,6 @@
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormGroup from "@mui/material/FormGroup";
-import amber from "@mui/material/colors/amber";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../hook/typed-hooks";
@@ -44,12 +43,6 @@ const RecipeIngredientsInfo = () => {
 									onChange={(event) => {
 										handleChange(event, ingredient);
 									}}
-									// sx={{
-									// 	"& .MuiSvgIcon-root": { fontSize: 32 },
-									// 	"&.Mui-checked": {
-									// 		color: amber[700],
-									// 	},
-									// }}
 								/>
 							}
 							label={ingredient.name}

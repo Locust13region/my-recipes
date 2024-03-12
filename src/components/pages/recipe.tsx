@@ -1,12 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../hook/typed-hooks";
-import {
-	Link,
-	Outlet,
-	useLocation,
-	useNavigate,
-	useParams,
-} from "react-router-dom";
+import { Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
 import {
 	Box,
 	Container,

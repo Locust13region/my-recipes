@@ -32,6 +32,13 @@ function getAccessToken() {
 		return null;
 	}
 }
+const headersAuth = {
+	Authorization: `Bearer ${getAccessToken()}`,
+	"Content-Type": "application/json",
+};
+export const getPath = (suffix: string) => {
+	return urlBase + suffix;
+};
 export const userRequest = async (credentials: TCredentials, url: UrlUser) => {
 	return await fetch(url, {
 		method: "POST",
@@ -53,54 +60,60 @@ export const tokenRefresh = async (refreshToken: string) => {
 export const getCategories = async () => {
 	return await fetch(urlCategories, { mode: "cors" });
 };
-export const getPath = (suffix: string) => {
-	return urlBase + suffix;
-};
 export const getCategoryList = async (
 	categoryId: number,
 	filterTagIds: string,
 	filterUsers: string
 ) => {
-	console.log(
-		urlCategoryList +
-			categoryId +
-			(filterTagIds ? `&TagIds=${filterTagIds}` : "") +
-			(filterUsers ? `&UserIds=${filterUsers}` : "")
-	);
 	return await fetch(
 		urlCategoryList +
 			categoryId +
 			(filterTagIds ? `&TagIds=${filterTagIds}` : "") +
 			(filterUsers ? `&UserIds=${filterUsers}` : ""),
 		{
-			headers: {
-				mode: "cors",
-				Authorization: `Bearer ${getAccessToken()}`,
-			},
+			headers: { ...headersAuth },
 		}
 	);
 };
 export const getUsersList = async () => {
 	return await fetch(urlUsers, {
-		headers: {
-			Authorization: `Bearer ${getAccessToken()}`,
-		},
+		headers: { ...headersAuth },
 	});
 };
 export const getTags = async () => {
 	return await fetch(urlTag, {
-		headers: {
-			Authorization: `Bearer ${getAccessToken()}`,
-		},
+		headers: { ...headersAuth },
+	});
+};
+export const getRecipeDescription = async (recipeId: string | null) => {
+	return await fetch(urlRecipe + (recipeId ? recipeId : ""), {
+		headers: { ...headersAuth },
+	});
+};
+export const getRecipeIngredients = async (recipeId: string) => {
+	return await fetch(urlIngredients + recipeId, {
+		headers: { ...headersAuth },
+	});
+};
+export const getRecipeSteps = async (recipeId: string) => {
+	return await fetch(urlSteps + recipeId, {
+		headers: { ...headersAuth },
+	});
+};
+export const getFavorites = async () => {
+	return await fetch(urlGetFavorites, {
+		headers: { ...headersAuth },
+	});
+};
+export const getWishlist = async () => {
+	return await fetch(urlWishlist, {
+		headers: { ...headersAuth },
 	});
 };
 export const postNewTag = async (name: string) => {
 	return await fetch(urlTag, {
 		method: "POST",
-		headers: {
-			Authorization: `Bearer ${getAccessToken()}`,
-			"Content-Type": "application/json",
-		},
+		headers: { ...headersAuth },
 		body: JSON.stringify({ name }),
 	});
 };
@@ -111,65 +124,15 @@ export const postNewRecipe = async (
 	const tagsArray = tag ? [tag] : [];
 	return await fetch(urlNewRecipe, {
 		method: "POST",
-		headers: {
-			Authorization: `Bearer ${getAccessToken()}`,
-			"Content-Type": "application/json",
-		},
+		headers: { ...headersAuth },
 		body: JSON.stringify({ ...newRecipe, tagIds: tagsArray }),
-	});
-};
-export const getRecipeDescription = async (recipeId: string | null) => {
-	return await fetch(urlRecipe + (recipeId ? recipeId : ""), {
-		headers: {
-			Authorization: `Bearer ${getAccessToken()}`,
-		},
-	});
-};
-export const getRecipeIngredients = async (recipeId: string) => {
-	return await fetch(urlIngredients + recipeId, {
-		headers: {
-			Authorization: `Bearer ${getAccessToken()}`,
-		},
-	});
-};
-export const getRecipeSteps = async (recipeId: string) => {
-	return await fetch(urlSteps + recipeId, {
-		headers: {
-			Authorization: `Bearer ${getAccessToken()}`,
-		},
 	});
 };
 export const postToFavorites = async (recipeId: string) => {
 	return await fetch(urlPostFavorites, {
 		method: "POST",
-		headers: {
-			Authorization: `Bearer ${getAccessToken()}`,
-			"Content-Type": "application/json",
-		},
+		headers: { ...headersAuth },
 		body: JSON.stringify({ recipeId }),
-	});
-};
-export const getFavorites = async () => {
-	return await fetch(urlGetFavorites, {
-		headers: {
-			Authorization: `Bearer ${getAccessToken()}`,
-		},
-	});
-};
-export const deleteFromFavorites = async (recipeId: string) => {
-	return await fetch(urlDeleteFavorites + recipeId, {
-		method: "DELETE",
-		headers: {
-			Authorization: `Bearer ${getAccessToken()}`,
-		},
-	});
-};
-export const deleteRecipe = async (recipeId: string) => {
-	return await fetch(urlRecipe + recipeId, {
-		method: "DELETE",
-		headers: {
-			Authorization: `Bearer ${getAccessToken()}`,
-		},
 	});
 };
 export const putUpdatedRecipeDescription = async (
@@ -180,66 +143,35 @@ export const putUpdatedRecipeDescription = async (
 	const { id, name, categoryId, source, description } = updatedRecipe;
 	return await fetch(urlRecipe + id, {
 		method: "PUT",
-		headers: {
-			Authorization: `Bearer ${getAccessToken()}`,
-			"Content-Type": "application/json",
-		},
+		headers: { ...headersAuth },
 		body: JSON.stringify({ name, categoryId, tagIds, source, description }),
 	});
 };
 export const putRecipeIngredient = async (id: number, name: string) => {
 	return await fetch(urlIngredient + id, {
 		method: "PUT",
-		headers: {
-			Authorization: `Bearer ${getAccessToken()}`,
-			"Content-Type": "application/json",
-		},
+		headers: { ...headersAuth },
 		body: JSON.stringify({ name }),
 	});
 };
 export const putRecipeStep = async (id: number, text: string) => {
 	return await fetch(urlStep + id, {
 		method: "PUT",
-		headers: {
-			Authorization: `Bearer ${getAccessToken()}`,
-			"Content-Type": "application/json",
-		},
+		headers: { ...headersAuth },
 		body: JSON.stringify({ text }),
-	});
-};
-export const deleteRecipeIngredients = async (id: number) => {
-	return await fetch(urlIngredient + id, {
-		method: "DELETE",
-		headers: {
-			Authorization: `Bearer ${getAccessToken()}`,
-		},
-	});
-};
-export const deleteRecipeSteps = async (id: number) => {
-	return await fetch(urlStep + id, {
-		method: "DELETE",
-		headers: {
-			Authorization: `Bearer ${getAccessToken()}`,
-		},
 	});
 };
 export const postNewRecipeIngredient = async (recipeId: string) => {
 	return await fetch(urlIngredient, {
 		method: "POST",
-		headers: {
-			Authorization: `Bearer ${getAccessToken()}`,
-			"Content-Type": "application/json",
-		},
+		headers: { ...headersAuth },
 		body: JSON.stringify({ recipeId, name: "Новый ингредиент" }),
 	});
 };
 export const postNewRecipeStep = async (recipeId: string) => {
 	return await fetch(urlStep, {
 		method: "POST",
-		headers: {
-			Authorization: `Bearer ${getAccessToken()}`,
-			"Content-Type": "application/json",
-		},
+		headers: { ...headersAuth },
 		body: JSON.stringify({ recipeId, text: "Новый этап" }),
 	});
 };
@@ -249,10 +181,7 @@ export const putReorderedRecipeIngredients = async (
 ) => {
 	return await fetch(urlIngredient + "order", {
 		method: "PUT",
-		headers: {
-			Authorization: `Bearer ${getAccessToken()}`,
-			"Content-Type": "application/json",
-		},
+		headers: { ...headersAuth },
 		body: JSON.stringify({ recipeId, ids }),
 	});
 };
@@ -262,36 +191,44 @@ export const putReorderedRecipeSteps = async (
 ) => {
 	return await fetch(urlStep + "order", {
 		method: "PUT",
-		headers: {
-			Authorization: `Bearer ${getAccessToken()}`,
-			"Content-Type": "application/json",
-		},
+		headers: { ...headersAuth },
 		body: JSON.stringify({ recipeId, ids }),
-	});
-};
-export const getWishlist = async () => {
-	return await fetch(urlWishlist, {
-		headers: {
-			Authorization: `Bearer ${getAccessToken()}`,
-		},
 	});
 };
 export const postToWishlist = async (ingredientId: number) => {
 	return await fetch(urlWishlist, {
 		method: "POST",
-		headers: {
-			Authorization: `Bearer ${getAccessToken()}`,
-			"Content-Type": "application/json",
-		},
+		headers: { ...headersAuth },
 		body: JSON.stringify({ ingredientId }),
+	});
+};
+export const deleteFromFavorites = async (recipeId: string) => {
+	return await fetch(urlDeleteFavorites + recipeId, {
+		method: "DELETE",
+		headers: { ...headersAuth },
+	});
+};
+export const deleteRecipe = async (recipeId: string) => {
+	return await fetch(urlRecipe + recipeId, {
+		method: "DELETE",
+		headers: { ...headersAuth },
 	});
 };
 export const deleteFromWishlist = async (id: number) => {
 	return await fetch(urlWishlist + id, {
 		method: "DELETE",
-		headers: {
-			Authorization: `Bearer ${getAccessToken()}`,
-			"Content-Type": "application/json",
-		},
+		headers: { ...headersAuth },
+	});
+};
+export const deleteRecipeSteps = async (id: number) => {
+	return await fetch(urlStep + id, {
+		method: "DELETE",
+		headers: { ...headersAuth },
+	});
+};
+export const deleteRecipeIngredients = async (id: number) => {
+	return await fetch(urlIngredient + id, {
+		method: "DELETE",
+		headers: { ...headersAuth },
 	});
 };
