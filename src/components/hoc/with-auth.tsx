@@ -11,7 +11,6 @@ const WithAuth: React.FC<React.PropsWithChildren> = ({ children }) => {
 	const location = useLocation();
 	const [isUpdatedActive, setUpdateStatus] = useState(true);
 	const [isAuth, setAuthStatus] = useState(false);
-
 	useEffect(() => {
 		(async () => {
 			const isLocalUser = localStorage.getItem("_recipes");
@@ -25,7 +24,7 @@ const WithAuth: React.FC<React.PropsWithChildren> = ({ children }) => {
 					setUpdateStatus(false);
 					setAuthStatus(true);
 				} else {
-					console.log("///////////////TOKEN REFRESHED!!!!///////////////");
+					console.log("///////////////TRY TOKEN REFRESH!!!!/////////////");
 					const isUpdateFulfill = await dispatch(tokenUpdate(localUser));
 					setUpdateStatus(false);
 					if (isUpdateFulfill.payload) {

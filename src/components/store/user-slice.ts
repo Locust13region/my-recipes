@@ -35,7 +35,6 @@ export const registration = createAsyncThunk(
 					"Ошибка соединения с сервером. Попробуйте позднее."
 				);
 			}
-			console.log(error);
 		}
 	}
 );
@@ -59,7 +58,6 @@ export const login = createAsyncThunk(
 					"Ошибка соединения с сервером. Попробуйте позднее."
 				);
 			}
-			console.log(error);
 		}
 	}
 );
@@ -69,6 +67,8 @@ export const tokenUpdate = createAsyncThunk(
 		try {
 			const response = await tokenRefresh(localUser.refreshToken);
 			if (!response.ok) {
+				localStorage.removeItem("_recipes");
+				dispatch(clearCurrentUser());
 				return false;
 			}
 			const result = await response.json();
@@ -94,7 +94,6 @@ export const receiveUsersList = createAsyncThunk(
 			}
 			return await response.json();
 		} catch (error) {
-			console.log(error);
 			if (error instanceof Error) {
 				return rejectWithValue(
 					"Ошибка соединения с сервером. Попробуйте позднее."

@@ -8,7 +8,7 @@ const Spinner: React.FC = () => {
 				<div className="flex justify-center items-center fixed left-0 top-0 right-0 bottom-0 bg-black bg-opacity-50 z-30">
 					<CircularProgress
 						size={60}
-						color="success"
+						color="warning"
 						// sx={{ color: "white" }}
 					/>
 				</div>,
