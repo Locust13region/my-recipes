@@ -73,7 +73,7 @@ const UsersSelect: React.FC<TUsersSelectProps> = ({
 								</span>
 							</button>
 						</header>
-						<Stack className="flex flex-col grow items-start px-4 overflow-y-scroll ">
+						<Stack className="flex flex-col grow items-start px-4 overflow-y-auto ">
 							<CssBaseline />
 							<Stack className="h-128px mx-3">
 								<h5 className="text-base text-center">
@@ -96,9 +96,9 @@ const UsersSelect: React.FC<TUsersSelectProps> = ({
 								/>
 								<Divider />
 							</Stack>
-							<Stack className="flex flex-col h-full overflow-y-scroll grow mx-3">
+							<Stack className="flex flex-col h-full overflow-y-auto grow mx-3">
 								<h6 className="sticky top-0 mt-2 text-sm">Пользователи:</h6>
-								<div className="grow overflow-y-scroll">
+								<div className="grow overflow-y-auto">
 									{!!users &&
 										users
 											.filter(
