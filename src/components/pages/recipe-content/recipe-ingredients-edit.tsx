@@ -65,7 +65,7 @@ const RecipeIngredientsEdit = () => {
 										name={`ingredient${id}`}
 										defaultValue={name === "Новый ингредиент" ? "" : name}
 										placeholder="Новый ингредиент"
-										sx={{ flexGrow: 1, overflow: "hidden" }}
+										sx={{ flexGrow: 1, overflow: "auto" }}
 										onFocus={(
 											event: React.FocusEvent<
 												HTMLInputElement | HTMLTextAreaElement

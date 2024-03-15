@@ -87,7 +87,7 @@ const RecipesList: React.FC = () => {
 											Владелец
 										</p>
 										<p className="text-xs overflow-hidden whitespace-nowrap">
-											{owner.email}
+											{owner.email.substring(0, owner.email.indexOf("@"))}
 										</p>
 									</button>
 								</SwiperSlide>

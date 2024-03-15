@@ -91,7 +91,10 @@ const UsersSelect: React.FC<TUsersSelectProps> = ({
 									checked={selectedUsers.some(
 										(SelectedUser) => SelectedUser.id === currentUser.id
 									)}
-									label={currentUser.email}
+									label={currentUser.email.substring(
+										0,
+										currentUser.email.indexOf("@")
+									)}
 									className="overflow-x-hidden"
 								/>
 								<Divider />
@@ -119,8 +122,12 @@ const UsersSelect: React.FC<TUsersSelectProps> = ({
 														checked={selectedUsers.some(
 															(SelectedUser) => SelectedUser.id === user.id
 														)}
-														label={user.email}
-														className="overflow-x-hidden"
+														label={user.email.substring(
+															0,
+															user.email.indexOf("@")
+														)}
+														className="w-full overflow-x-hidden"
+														sx={{ marginRight: 0 }}
 													/>
 												);
 											})}
