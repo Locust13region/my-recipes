@@ -9,7 +9,16 @@ type TDialogProps = {
 	show: boolean;
 	setShow: (arg: boolean) => void;
 	dialogMessage: string;
-	dialogAction: AsyncThunk<undefined, void, { state: RootState }>;
+	dialogAction: [
+		{
+			remote: boolean;
+			remoteAction: AsyncThunk<undefined, void, { state: RootState }>;
+		},
+		{
+			local: boolean;
+			localAction: React.Dispatch<React.SetStateAction<string[]>>;
+		}
+	];
 };
 
 const Dialog: React.FC<TDialogProps> = ({
@@ -19,7 +28,8 @@ const Dialog: React.FC<TDialogProps> = ({
 	dialogAction,
 }) => {
 	const dispatch = useAppDispatch();
-
+	const { remote, remoteAction } = dialogAction[0];
+	const { local, localAction } = dialogAction[1];
 	const ref = useRef(null);
 	useClickAway(ref, () => {
 		setShow(false);
@@ -57,7 +67,9 @@ const Dialog: React.FC<TDialogProps> = ({
 							<button
 								className="mb-7 p-3 w-28 text-xl border border-gray-300 rounded-full px-4 py-1 leading-7"
 								onClick={() => {
-									dispatch(dialogAction());
+									remote && dispatch(remoteAction());
+									local && localAction([]);
+									local && localStorage.removeItem("_recipesExtraGoods");
 									setShow(false);
 								}}
 							>

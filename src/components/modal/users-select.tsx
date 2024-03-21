@@ -97,7 +97,7 @@ const UsersSelect: React.FC<TUsersSelectProps> = ({
 									)}
 									className="overflow-x-hidden"
 								/>
-								<Divider />
+								<Divider aria-hidden="true" />
 							</Stack>
 							<Stack className="flex flex-col h-full overflow-y-auto grow mx-3">
 								<h6 className="sticky top-0 mt-2 text-sm">Пользователи:</h6>
