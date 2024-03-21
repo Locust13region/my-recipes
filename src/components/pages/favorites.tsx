@@ -108,7 +108,10 @@ const Favorites: React.FC = () => {
 					show={showDialog}
 					setShow={setShowDialog}
 					dialogMessage="Список избранных рецептов будет очищен!"
-					dialogAction={clearFavoritesList}
+					dialogAction={{
+						remote: true,
+						remoteAction: clearFavoritesList,
+					}}
 				/>
 				<Link to={"/shopping"}>
 					<span className="flex text-amber-500 text-3xl material-symbols-outlined">

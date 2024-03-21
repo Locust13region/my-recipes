@@ -111,7 +111,6 @@ const ShoppingList: React.FC = () => {
 						fullWidth
 						id="extraGoods"
 						name="extraGoods"
-						// InputProps={{ disableUnderline: true }}
 						variant="standard"
 						label="а ещё нужно купить..."
 						value={extraGoods && extraGoods.join("\n")}
@@ -200,10 +199,12 @@ const ShoppingList: React.FC = () => {
 					show={showDialog}
 					setShow={setShowDialog}
 					dialogMessage="Список покупок будет очищен!"
-					dialogAction={[
-						{ remote: !!wishlist.length, remoteAction: clearWishlist },
-						{ local: !!extraGoods.length, localAction: setExtraGoods },
-					]}
+					dialogAction={{
+						remote: !!wishlist.length,
+						remoteAction: clearWishlist,
+						local: !!extraGoods.length,
+						localAction: setExtraGoods,
+					}}
 				/>
 				<Link to={"/favorites"}>
 					<span className="flex text-amber-500 text-3xl material-symbols-outlined">
