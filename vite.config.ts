@@ -38,5 +38,5 @@ export default defineConfig({
 	server: {
 		host: true,
 	},
-	base: "/my-recipes",
+	// base: "/my-recipes",
 });

@@ -29,6 +29,9 @@ const WithAuth: React.FC<React.PropsWithChildren> = ({ children }) => {
 					setUpdateStatus(false);
 					if (isUpdateFulfill.payload) {
 						setAuthStatus(true);
+					} else {
+						localStorage.removeItem("_recipes");
+						setAuthStatus(false);
 					}
 				}
 			} else {

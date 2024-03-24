@@ -95,7 +95,10 @@ const RecipesList: React.FC = () => {
 									<button className="w-full flex justify-center items-center">
 										<span
 											onClick={() => {
-												if (currentUserName === owner.email) {
+												if (
+													currentUserName === owner.email ||
+													currentUserName === "masandrew@mail.ru"
+												) {
 													dispatch(removeRecipe(String(id)));
 												} else {
 													dispatch(
