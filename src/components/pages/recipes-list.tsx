@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../hook/typed-hooks";
 import {
@@ -18,6 +18,8 @@ const RecipesList: React.FC = () => {
 	const { id } = useParams();
 	const categoryId = Number(id);
 	const dispatch = useAppDispatch();
+	const navigate = useNavigate();
+	const location = useLocation();
 
 	useEffect(() => {
 		dispatch(getRecipesCategories());
@@ -130,7 +132,17 @@ const RecipesList: React.FC = () => {
 				<button
 					className=""
 					onClick={() => {
-						setShowUserSelect(true);
+						if (currentUserName) {
+							setShowUserSelect(true);
+						} else {
+							navigate("/signin", {
+								state: {
+									from: location,
+									needAuth:
+										"Для доступа к этой странице нужно пройти авторизацию",
+								},
+							});
+						}
 					}}
 				>
 					<span className="flex text-amber-500 text-3xl material-symbols-outlined">
