@@ -72,10 +72,7 @@ export const getCategoryList = async (
 		urlCategoryList +
 			categoryId +
 			(filterTagIds ? `&TagIds=${filterTagIds}` : "") +
-			(filterUsers ? `&UserIds=${filterUsers}` : ""),
-		{
-			headers: { ...headersAuth() },
-		}
+			(filterUsers ? `&UserIds=${filterUsers}` : "")
 	);
 };
 export const getUsersList = async () => {
@@ -84,24 +81,16 @@ export const getUsersList = async () => {
 	});
 };
 export const getTags = async () => {
-	return await fetch(urlTag, {
-		headers: { ...headersAuth() },
-	});
+	return await fetch(urlTag, {});
 };
 export const getRecipeDescription = async (recipeId: string | null) => {
-	return await fetch(urlRecipe + (recipeId ? recipeId : ""), {
-		headers: { ...headersAuth() },
-	});
+	return await fetch(urlRecipe + (recipeId ? recipeId : ""), {});
 };
 export const getRecipeIngredients = async (recipeId: string) => {
-	return await fetch(urlIngredients + recipeId, {
-		headers: { ...headersAuth() },
-	});
+	return await fetch(urlIngredients + recipeId, {});
 };
 export const getRecipeSteps = async (recipeId: string) => {
-	return await fetch(urlSteps + recipeId, {
-		headers: { ...headersAuth() },
-	});
+	return await fetch(urlSteps + recipeId, {});
 };
 export const getFavorites = async () => {
 	return await fetch(urlGetFavorites, {

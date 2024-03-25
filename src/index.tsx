@@ -70,19 +70,11 @@ const router = createBrowserRouter(
 		},
 		{
 			path: ":id",
-			element: (
-				<WithAuth>
-					<RecipesList />
-				</WithAuth>
-			),
+			element: <RecipesList />,
 		},
 		{
 			path: ":categoryId/:id",
-			element: (
-				<WithAuth>
-					<Recipe />
-				</WithAuth>
-			),
+			element: <Recipe />,
 			children: [
 				{
 					index: true,
