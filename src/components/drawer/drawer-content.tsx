@@ -8,9 +8,8 @@ import ListItemText from "@mui/material/ListItemText";
 import MailIcon from "@mui/icons-material/Mail";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import { memo } from "react";
 
-const DrawerInner = memo(() => {
+const DrawerContent = () => {
 	return (
 		<>
 			<Toolbar></Toolbar>
@@ -33,6 +32,6 @@ const DrawerInner = memo(() => {
 			</List>
 		</>
 	);
-});
+};
 
-export default DrawerInner;
+export default DrawerContent;
